@@ -31,27 +31,15 @@ let locationsOfInterest = [
     }
 ]
 
-// export default function Map() {
-//     return (
-//         <View style={styles.container}>
-//             <MapView
-//                 style={styles.map}
-//                 provider = {PROVIDER_GOOGLE}
-//                 initialRegion = {{
-//                     latitude: 49.2827,
-//                     longitude: -123.1207,
-//                     latitudeDelta: 0.0922,
-//                     longitudeDelta: 0.0421
-//                 }}
-//                 showsUserLocation = {true}
-//                 showsMyLocationButton
-//             />
-//         </View>
-//     )
-// }
 
 export default function Map() {
-    const [count, setCount] = useState(0);
+    const [markerInfo, setMarkerInfo] = React.useState(null);
+
+    // Add marker on press event
+    const handleMarkerPress = (event: { nativeEvent: { coordinate: any; }; }) => {
+        const {coordinate} = event.nativeEvent;
+        setMarkerInfo(coordinate);
+    };
 
     const onRegionChange = (region: any) => {
         // To get longitude and latitude
@@ -85,11 +73,17 @@ export default function Map() {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421
                     }}
+                    onPress={handleMarkerPress}
             >
             {showLocationsOfInterest()}
-
+            {markerInfo && <Marker coordinate={markerInfo} />}
             <Marker pinColor="#00ff00" coordinate={{ latitude: 49.20, longitude: -123.12}} />
             </MapView>
+            {markerInfo && (
+                <View style={{position: 'absolute', bottom: 20, left: 20, right: 20, backgroundColor: 'white', padding: 10, borderRadius: 10}}>
+                    <Text>Location: {JSON.stringify(markerInfo)}</Text>
+                </View>
+            )}
             <StatusBar style="auto" />
         </View>
     );
