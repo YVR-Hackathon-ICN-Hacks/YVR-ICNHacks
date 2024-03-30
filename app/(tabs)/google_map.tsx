@@ -1,7 +1,8 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { View } from '@/components/Themed';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Platform, PermissionsAndroid } from "react-native";
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
@@ -12,7 +13,65 @@ const initialRegion = {
     longitudeDelta: 0.0421,
 }
 
+import Geolocation from "react-native-geolocation-service";
+
+async function requestPermission() {
+        try {
+            if (Platform.OS === "ios") {
+                return await Geolocation.requestAuthorization("always");
+            }
+            if (Platform.OS === "android") {
+                return await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                );
+            }
+        } catch (e) {
+            console.log(e);
+        }
+}
+
+let locationsOfInterest = [
+    {
+        title: "BCIT Downtown Campus",
+        location: {
+            latitude: 49.28361903764901,
+            longitude: -123.11531917533154
+        },
+        description: "My First Marker"
+    },
+    {
+        title: "Cavo Bar + Kitchen",
+        location: {
+            latitude: 49.280909118415785,
+            longitude: -123.12163863100838
+        },
+        description: "good good pasta"
+    }
+]
+
 export default function GoogleMap() {
+    // const [location, setLocation] = useState();
+    // useEffect(() => {
+    //     requestPermission().then(result => {
+    //       console.log({ result });
+    //       if (result === "granted") {
+    //         Geolocation.getCurrentPosition(
+    //           pos => {
+    //             setLocation(pos.coords);
+    //           },
+    //           error => {
+    //             console.log(error);
+    //           },
+    //           {
+    //             enableHighAccuracy: true,
+    //             timeout: 3600,
+    //             maximumAge: 3600,
+    //           },
+    //         );
+    //       }
+    //     });
+    // }, []);
+
     const mapRef = useRef<MapView>(null);
 
     async function moveToLocation(latitude: any, longitude: any) {
@@ -92,7 +151,3 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
 });
-
-function setRegion(arg0: { latitude: any; longitude: any; latitudeDelta: number; longitudeDelta: number; }) {
-    throw new Error('Function not implemented.');
-}

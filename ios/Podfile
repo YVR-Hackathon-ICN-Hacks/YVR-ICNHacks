@@ -38,6 +38,10 @@ elsif podfile_properties.key?('ios.flipper') then
 end
 
 target 'starterexpo' do
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'GoogleMaps'
+  pod 'Google-Maps-iOS-Utils'
   use_expo_modules!
   config = use_native_modules!
 

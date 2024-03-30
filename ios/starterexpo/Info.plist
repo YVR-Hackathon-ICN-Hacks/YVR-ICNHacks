@@ -74,5 +74,9 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Access to location information is required for the use of the service.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Access to location information is required for the use of the service.</string>
   </dict>
 </plist>
