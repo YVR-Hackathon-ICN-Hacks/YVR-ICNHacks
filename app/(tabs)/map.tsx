@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Button,
+  ActivityIndicator
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StatusBar } from "expo-status-bar";
+import * as Location from 'expo-location';
+import { LocationObject } from "expo-location";
 
 let locationsOfInterest = [
     {
@@ -32,7 +35,89 @@ let locationsOfInterest = [
 ]
 
 
+// export default function App() {
+//     const [location, setLocation] = useState<LocationObject | null>(null);
+//     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+//     useEffect(() => {
+//         (async () => {
+//             let { status } = await Location.requestForegroundPermissionsAsync();
+//             if (status !== 'granted') {
+//                 setErrorMsg('Permission to access location was denied');
+//                 return;
+//             }
+
+//             let subscription = await Location.watchPositionAsync(
+//                 { accuracy: Location.Accuracy.High },
+//                 (newLocation) => {
+//                   setLocation(newLocation);
+//                 }
+//             );
+
+//             return () => {
+//                 if (subscription) {
+//                   subscription.remove();
+//                 }
+//             };
+//         })();
+//     }, []);
+
+//     return (
+//         <View style={{ flex: 1 }}>
+//             {location ? (
+//                 <MapView
+//                 style={{ flex: 1 }}
+//                 initialRegion={{
+//                     latitude: location.coords.latitude,
+//                     longitude: location.coords.longitude,
+//                     latitudeDelta: 0.0922,
+//                     longitudeDelta: 0.0421,
+//                 }}
+//                 >
+//                 <Marker
+//                     coordinate={{
+//                     latitude: location.coords.latitude,
+//                     longitude: location.coords.longitude,
+//                     }}
+//                     title="Your Location"
+//                     description="This is your current location"
+//                 />
+//                 </MapView>
+//             ) : (
+//                 <ActivityIndicator style={{ flex: 1 }} animating size="large" />
+//             )}
+//             {errorMsg && <Text>{errorMsg}</Text>}
+//         </View>
+//   );
+// }
+
+
+
 export default function Map() {
+    useEffect(() => {
+        requestLocationPermission();
+    }, []);
+
+    const requestLocationPermission = async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.log('Location permission denied');
+          return;
+        }
+        
+        console.log('Location permission granted');
+        getCurrentLocation();
+    };
+
+    const getCurrentLocation = async () => {
+        try {
+          const location = await Location.getCurrentPositionAsync({});
+          console.log('Current location:', location.coords);
+        } catch (error) {
+          console.error('Error getting current location:', error);
+        }
+    };
+
     const [markerInfo, setMarkerInfo] = React.useState(null);
 
     // Add marker on press event
@@ -45,7 +130,7 @@ export default function Map() {
         // To get longitude and latitude
         const longitude = region.longitude;
         const latitude = region.latitude;
-        console.log(region);
+        // console.log(region);
     }
 
     // Add markers to the map (pin icon)
@@ -62,10 +147,27 @@ export default function Map() {
         })
     }
 
+//     const [location, setLocation] = useState(null);
+//     const [errorMsg, setErrorMsg] = useState(null);
+
+//     useEffect(() => {
+//         (async () => {
+//         let { status } = await Location.requestForegroundPermissionsAsync();
+//         if (status !== 'granted') {
+//             setErrorMsg('Permission to access location was denied');
+//             return;
+//         }
+
+//         let location = await Location.getCurrentPositionAsync({});
+//         setLocation(location);
+//         })();
+//     }, []);
+
     return (
         <View style={styles.container}>
             <MapView
                     style={styles.map}
+                    provider="google"
                     onRegionChange={onRegionChange}
                     initialRegion={{
                         latitude: 49.2827,
@@ -74,6 +176,8 @@ export default function Map() {
                         longitudeDelta: 0.0421
                     }}
                     onPress={handleMarkerPress}
+                    showsUserLocation={true}
+                    followsUserLocation={true}
             >
             {showLocationsOfInterest()}
             {markerInfo && <Marker coordinate={markerInfo} />}
@@ -107,6 +211,7 @@ export default function Map() {
     map: {
         width: '100%',
         height: '100%'
+
     }
   });
   
