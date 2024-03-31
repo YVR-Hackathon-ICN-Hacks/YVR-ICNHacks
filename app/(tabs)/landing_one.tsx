@@ -12,11 +12,18 @@ export default function LandingOne() {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <View style={styles.block}>
+            <View style={styles.lineBlock}>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>Welcome! (name)</Text>
                 <Text style={styles.description}>Explore features</Text>
+            </View>
+            <View style={styles.lineBlock}>
+            </View>
+            <View style={styles.itemBlock}>
+                <Text style={styles.textStyle}>
+                    Main
+                </Text>
             </View>
             <View style={styles.itemContainer}>
                 <ScrollView
@@ -81,8 +88,22 @@ export default function LandingOne() {
 }
 
 const styles = StyleSheet.create({
-    block: {
-        height: 100
+    lineBlock: {
+        height: 10
+    },
+    itemBlock: {
+        width: 330,
+        height: 300,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10, // Adjust the value as needed for rounded border
+        elevation: 5, // Shadow elevation (Android specific)
+        shadowColor: '#000', // Shadow color
+        shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
+        shadowOpacity: 0.25, // Shadow opacity
+        shadowRadius: 3, // Shadow radius
+        margin: 10
     },
     container: {
         flex: 1,
@@ -90,7 +111,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: 'bold',
     },
     description: {
@@ -118,7 +139,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         flex: 1,
         width: 200,
-        height: 300,
+        height: 200,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10, // Adjust the value as needed for rounded border
