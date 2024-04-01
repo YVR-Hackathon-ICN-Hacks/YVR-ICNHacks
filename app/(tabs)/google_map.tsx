@@ -3,31 +3,54 @@ import { View } from '@/components/Themed';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, PermissionsAndroid } from "react-native";
-
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import Geolocation from 'react-native-geolocation-service';
+
+import { GOOGLE_MAPS_API_KEY } from "@env";
+
+
+async function requestLocationPermission() {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Permission',
+            message:
+              'This app needs to access your location in order to show you the map',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        console.log(granted)
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('granted');
+        } else {
+          console.log('granted false');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      // iOS의 경우
+      Geolocation.requestAuthorization('whenInUse').then(granted => {
+        if (granted === 'granted') {
+          console.log('granted - ios');
+        } else {
+          console.log('granted false - ios');
+        }
+      });
+    }
+  }
+
+
 
 const initialRegion = {
     latitude: 49.2827,
     longitude: -123.1207,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
-}
-
-import Geolocation from "react-native-geolocation-service";
-
-async function requestPermission() {
-        try {
-            if (Platform.OS === "ios") {
-                return await Geolocation.requestAuthorization("always");
-            }
-            if (Platform.OS === "android") {
-                return await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                );
-            }
-        } catch (e) {
-            console.log(e);
-        }
 }
 
 let locationsOfInterest = [
@@ -49,28 +72,11 @@ let locationsOfInterest = [
     }
 ]
 
+
 export default function GoogleMap() {
-    // const [location, setLocation] = useState();
-    // useEffect(() => {
-    //     requestPermission().then(result => {
-    //       console.log({ result });
-    //       if (result === "granted") {
-    //         Geolocation.getCurrentPosition(
-    //           pos => {
-    //             setLocation(pos.coords);
-    //           },
-    //           error => {
-    //             console.log(error);
-    //           },
-    //           {
-    //             enableHighAccuracy: true,
-    //             timeout: 3600,
-    //             maximumAge: 3600,
-    //           },
-    //         );
-    //       }
-    //     });
-    // }, []);
+    useEffect(() => {
+        requestLocationPermission();
+    }, []);
 
     const mapRef = useRef<MapView>(null);
 
@@ -92,7 +98,7 @@ export default function GoogleMap() {
                 <GooglePlacesAutocomplete 
                     placeholder="Search for places"
                     query={{
-                        key: 'AIzaSyDHUtr6H6LiTFH9UxTzNeaLafn2nuckGX8',
+                        key: GOOGLE_MAPS_API_KEY,
                         language: 'en', 
                         components: "country:ca",
                     }}

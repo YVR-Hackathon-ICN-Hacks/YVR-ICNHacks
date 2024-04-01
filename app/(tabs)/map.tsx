@@ -34,66 +34,9 @@ let locationsOfInterest = [
     }
 ]
 
-
-// export default function App() {
-//     const [location, setLocation] = useState<LocationObject | null>(null);
-//     const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-//     useEffect(() => {
-//         (async () => {
-//             let { status } = await Location.requestForegroundPermissionsAsync();
-//             if (status !== 'granted') {
-//                 setErrorMsg('Permission to access location was denied');
-//                 return;
-//             }
-
-//             let subscription = await Location.watchPositionAsync(
-//                 { accuracy: Location.Accuracy.High },
-//                 (newLocation) => {
-//                   setLocation(newLocation);
-//                 }
-//             );
-
-//             return () => {
-//                 if (subscription) {
-//                   subscription.remove();
-//                 }
-//             };
-//         })();
-//     }, []);
-
-//     return (
-//         <View style={{ flex: 1 }}>
-//             {location ? (
-//                 <MapView
-//                 style={{ flex: 1 }}
-//                 initialRegion={{
-//                     latitude: location.coords.latitude,
-//                     longitude: location.coords.longitude,
-//                     latitudeDelta: 0.0922,
-//                     longitudeDelta: 0.0421,
-//                 }}
-//                 >
-//                 <Marker
-//                     coordinate={{
-//                     latitude: location.coords.latitude,
-//                     longitude: location.coords.longitude,
-//                     }}
-//                     title="Your Location"
-//                     description="This is your current location"
-//                 />
-//                 </MapView>
-//             ) : (
-//                 <ActivityIndicator style={{ flex: 1 }} animating size="large" />
-//             )}
-//             {errorMsg && <Text>{errorMsg}</Text>}
-//         </View>
-//   );
-// }
-
-
-
 export default function Map() {
+    // Request location permission 
+    /*
     useEffect(() => {
         requestLocationPermission();
     }, []);
@@ -105,9 +48,10 @@ export default function Map() {
           return;
         }
         
-        console.log('Location permission granted');
+        console.log('Location permission granted asdf');
         getCurrentLocation();
     };
+    */
 
     const getCurrentLocation = async () => {
         try {
@@ -147,27 +91,11 @@ export default function Map() {
         })
     }
 
-//     const [location, setLocation] = useState(null);
-//     const [errorMsg, setErrorMsg] = useState(null);
-
-//     useEffect(() => {
-//         (async () => {
-//         let { status } = await Location.requestForegroundPermissionsAsync();
-//         if (status !== 'granted') {
-//             setErrorMsg('Permission to access location was denied');
-//             return;
-//         }
-
-//         let location = await Location.getCurrentPositionAsync({});
-//         setLocation(location);
-//         })();
-//     }, []);
 
     return (
         <View style={styles.container}>
             <MapView
                     style={styles.map}
-                    provider="google"
                     onRegionChange={onRegionChange}
                     initialRegion={{
                         latitude: 49.2827,
