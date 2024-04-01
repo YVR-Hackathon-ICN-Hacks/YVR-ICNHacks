@@ -3,6 +3,7 @@ import { Dimensions, FlatList, ScrollView, StyleSheet, TouchableOpacity } from '
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const data = [
     { id: 1, name: 'John Doe', age: 30, job: 'Engineer' },
@@ -19,6 +20,7 @@ type ItemType = {
 
 
 export default function LandingTwo() {
+    const navigation = useNavigation();
     const renderItem: ({ item }: { item: ItemType }) => JSX.Element = ({ item }) => (
         <View style={styles.row}>
             <Text style={styles.cell}>{item.name}</Text>
@@ -49,33 +51,47 @@ export default function LandingTwo() {
             <View style={styles.buttonContainer}>
                 {/* 첫 번째 줄 */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('pages', { context: "Status page" })}
+                    >
                         <MaterialIcons name='info' style={styles.iconStyle}></MaterialIcons>
                         <Text style={styles.buttonText}>Status</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('pages', { context: "Event page" })}>
                         <MaterialIcons name='event' style={styles.iconStyle}></MaterialIcons>
                         <Text style={styles.buttonText}>Event</Text>
                     </TouchableOpacity>
                 </View>
                 {/* 두 번째 줄 */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('pages', { context: "Statistics page" })}>
                         <MaterialIcons name='analytics' style={styles.iconStyle}></MaterialIcons>
                         <Text style={styles.buttonText}>Statistics</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('pages', { context: "Manual page" })}>
                         <MaterialIcons name='assignment' style={styles.iconStyle}></MaterialIcons>
                         <Text style={styles.buttonText}>Manual</Text>
                     </TouchableOpacity>
                 </View>
                 {/* 세 번째 줄 */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('pages', { context: "Number page" })}
+                    >
                         <MaterialIcons name='phone' style={styles.iconStyle}></MaterialIcons>
                         <Text style={styles.buttonText}>Number</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('pages', { context: "Schedule page" })}>
                         <MaterialIcons name='schedule' style={styles.iconStyle}></MaterialIcons>
                         <Text style={styles.buttonText}>Schedule</Text>
                     </TouchableOpacity>

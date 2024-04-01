@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     itemBlock: {
         width: 330,
-        height: 300,
+        height: 330,
         alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center',
