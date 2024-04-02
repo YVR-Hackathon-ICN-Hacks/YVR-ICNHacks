@@ -11,6 +11,11 @@ export default function StoryBook() {
         iconName="home"
         text="Authentication"
       />
+      <Clickable 
+        href="/storybook/google_map"
+        iconName = "map"
+        text="Google Map" 
+      />
     </View>
   );
 }
