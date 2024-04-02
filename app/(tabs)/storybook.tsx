@@ -11,6 +11,11 @@ export default function StoryBook() {
         iconName="home"
         text="Authentication"
       />
+      <Clickable
+        href="/storybook/(ministack)"
+        iconName="plus"
+        text="Top Stack Navigator"
+      />
     </View>
   );
 }
