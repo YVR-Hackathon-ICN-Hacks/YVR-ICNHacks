@@ -16,6 +16,11 @@ export default function StoryBook() {
         iconName = "map"
         text="Google Map" 
       />
+      <Clickable 
+        href="/storybook/switch" 
+        iconName="toggle-on" 
+        text="Switch" 
+      />
     </View>
   );
 }
