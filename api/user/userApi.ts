@@ -1,12 +1,15 @@
+import { User } from "./model/user";
+
 // Need to be updated with the correct URL
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://localhost:3000/api';
 
 export async function getUserData(route: string): Promise<any> {
   try {
-    const response = await fetch(`${API_URL}/${route}`);
-    const data = await response.json();
+    const response = await fetch(`${API_URL}/${route}` , {
+      method: "GET",
+    });    
+    const data = await response.json();        
     return { success: true, message: "Successfully got data !", data };
-
   } catch (error: any) {
     
     return {
@@ -16,7 +19,7 @@ export async function getUserData(route: string): Promise<any> {
   }
 }
 
-export async function postData(route: string, body: any): Promise<any> {
+export async function addUserData(route: string, body: any): Promise<any> {
   try {
     const response = await fetch(`${API_URL}/api/${route}`, {
       method: "POST",
