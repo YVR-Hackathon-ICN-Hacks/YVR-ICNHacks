@@ -11,15 +11,20 @@ export default function StoryBook() {
         iconName="home"
         text="Authentication"
       />
-      <Clickable 
+      <Clickable
         href="/storybook/google_map"
-        iconName = "map"
-        text="Google Map" 
+        iconName="map"
+        text="Google Map"
       />
-      <Clickable 
-        href="/storybook/switch" 
-        iconName="toggle-on" 
-        text="Switch" 
+      <Clickable
+        href="/storybook/switch"
+        iconName="toggle-on"
+        text="Switch"
+      />
+      <Clickable
+        href="/storybook/checkbox"
+        iconName="check-square"
+        text="Checkbox"
       />
     </View>
   );
