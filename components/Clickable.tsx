@@ -7,8 +7,10 @@ import { useColorScheme } from "@/components/useColorScheme";
 
 type IconName = "refresh" | "home" | "plus" | "search" | "map" | "camera" | "list" ; // Add more if needed
 
+type StaticRoutes = "/storybook/refresh" | "/storybook/authentication" | "/storybook/google_map" | "/storybook/camera" | "/storybook/list";
+
 interface ClickableLinkProps {
-  href: string;
+  href: StaticRoutes;
   iconName: IconName;
   text: string;
 }
