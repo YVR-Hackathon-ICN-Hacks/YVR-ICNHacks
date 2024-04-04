@@ -1,5 +1,5 @@
 import ButtonComponent from '@/components/ButtonComponent';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { View, Text } from '@/components/Themed';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,72 +8,117 @@ export default function Button() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Button Types</Text>
-            <View style={styles.row}>
-                <ButtonComponent
-                    title="Solid"
-                    onPress={() => console.log("Clicked")}
-                />
-                <ButtonComponent
-                    title="Outline"
-                    type="outline"
-                />
-                <ButtonComponent
-                    title="Clear"
-                    type="clear"
-                />
-            </View>
-            <Text style={styles.text}>Button Sizes</Text>
-            <View style={styles.row}>
-                <ButtonComponent
-                    title="Small"
-                    size="sm"
-                />
-                <ButtonComponent
-                    title="Medium"
-                    size="md"
-                />
-                <ButtonComponent
-                    title="Large"
-                    size="lg"
-                />
-            </View>
-            <Text style={styles.text}>Button Colours</Text>
-            <View style={styles.row}>
-                <ButtonComponent
-                    title="Primary"
-                />
-                <ButtonComponent
-                    title="Warning"
-                    color="warning"
-                />
-                <ButtonComponent
-                    title="Error"
-                    color="error"
-                />
-                <ButtonComponent
-                    title="Success"
-                    color="success"
-                />
-                <ButtonComponent
-                    title="Custom"
-                    color="#4FDB8D"
-                />
-            </View>
-            <Text style={styles.text}>Button Status</Text>
-            <View style={styles.row}>
-                <ButtonComponent
-                    title="Disabled"
-                    disabled
-                />
-            </View>
-            <Text style={styles.text}>Button with Icon</Text>
-            <View style={styles.row}>
-                <ButtonComponent>
-                    Save
-                    <Icon name="save" color="white" />
-                </ButtonComponent>
-            </View>
+            <ScrollView contentContainerStyle={styles.scrollview}>
+                <Text style={styles.text}>Button Types</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        title="Solid"
+                        onPress={() => console.log("Clicked")}
+                    />
+                    <ButtonComponent
+                        title="Outline"
+                        type="outline"
+                    />
+                    <ButtonComponent
+                        title="Clear"
+                        type="clear"
+                    />
+                </View>
+                <Text style={styles.text}>Button Sizes</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        title="Small"
+                        size="sm"
+                    />
+                    <ButtonComponent
+                        title="Medium"
+                        size="md"
+                    />
+                    <ButtonComponent
+                        title="Large"
+                        size="lg"
+                    />
+                </View>
+                <Text style={styles.text}>Button Colours</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        title="Primary"
+                    />
+                    <ButtonComponent
+                        title="Warning"
+                        color="warning"
+                    />
+                    <ButtonComponent
+                        title="Error"
+                        color="error"
+                    />
+                    <ButtonComponent
+                        title="Success"
+                        color="success"
+                    />
+                    <ButtonComponent
+                        title="Custom"
+                        color="#4FDB8D"
+                    />
+                </View>
+                <Text style={styles.text}>Button Status</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        title="Disabled"
+                        disabled
+                    />
+                </View>
+                <Text style={styles.text}>Button with Icon</Text>
+                <View style={styles.row}>
+                    <ButtonComponent>
+                        Save
+                        <Icon name="save" color="white" />
+                    </ButtonComponent>
+                </View>
+                <Text style={styles.text}>Rounded Button</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        title="LOG IN"
+                        customStyle={{
+                            backgroundColor: 'black',
+                            borderWidth: 2,
+                            borderColor: 'white',
+                            borderRadius: 30,
+                            width: 200,
+                            marginHorizontal: 50,
+                            marginVertical: 10,
+                        }}
+                        titleStyle={{fontWeight: 'bold'}}
+                    />
+                </View>
+                <Text style={styles.text}>Loading Button</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        loading
+                        customStyle={{
+                            backgroundColor: 'black',
+                            borderWidth: 2,
+                            borderColor: 'white',
+                            borderRadius: 30,
+                            width: 200,
+                        }}
+                    />
+                </View>
+                <Text style={styles.text}>Button with Alert</Text>
+                <View style={styles.row}>
+                    <ButtonComponent
+                        title="Alert"
+                        customStyle={{
+                            backgroundColor: 'black',
+                            borderWidth: 2,
+                            borderColor: 'white',
+                            borderRadius: 30,
+                            width: 200,
+                        }}
+                        onPress={() => alert("Alert test")}
+                    />
+                </View>
+            </ScrollView>
         </View>
     )
 }
@@ -81,7 +126,9 @@ export default function Button() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
+    },
+    scrollview: {
+        alignItems: 'center',
         justifyContent: "center",
         rowGap: 20,
     },
