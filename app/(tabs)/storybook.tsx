@@ -15,6 +15,11 @@ export default function StoryBook() {
         href="/storybook/(ministack)"
         iconName="plus"
         text="Top Stack Navigator"
+         />
+      <Clickable 
+        href="/storybook/google_map"
+        iconName = "map"
+        text="Google Map" 
       />
     </View>
   );
