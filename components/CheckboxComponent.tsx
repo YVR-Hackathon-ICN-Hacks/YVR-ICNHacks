@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { CheckBox, Icon } from '@rneui/themed';
-import { View, StyleSheet, Text } from 'react-native';
+import { CheckBox } from '@rneui/themed';
+import { StyleSheet } from 'react-native';
 
 interface CheckboxComponentProps {
     title?: string;

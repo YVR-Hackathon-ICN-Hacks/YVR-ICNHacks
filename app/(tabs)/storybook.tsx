@@ -26,6 +26,11 @@ export default function StoryBook() {
         iconName="check-square"
         text="Checkbox"
       />
+      <Clickable
+        href="/storybook/button"
+        iconName="play"
+        text="Button"
+      />
     </View>
   );
 }
