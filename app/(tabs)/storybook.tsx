@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import Clickable from "@/components/Clickable";
-
+import React from "react";
 export default function StoryBook() {
   return (
     <View style={styles.container}>
@@ -15,6 +15,16 @@ export default function StoryBook() {
         href="/storybook/google_map"
         iconName = "map"
         text="Google Map" 
+      />
+      <Clickable 
+        href="/storybook/camera"
+        iconName="camera"
+        text="Camera"
+      />
+      <Clickable 
+        href="/storybook/list"
+        iconName="list"
+        text="List"
       />
     </View>
   );
