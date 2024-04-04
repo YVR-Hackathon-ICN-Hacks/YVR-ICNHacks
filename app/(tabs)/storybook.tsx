@@ -38,7 +38,7 @@ export default function StoryBook() {
       />
       <Clickable
         href="/storybook/textinput"
-        iconName="search"
+        iconName="book"
         text="text input"
       />
     </View>

@@ -5,7 +5,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 
-type IconName = "refresh" | "home" | "plus" | "search" | "map" | "toggle-on" | "check-square" | "play" | "search"; // Add more if needed
+type IconName = "refresh" | "home" | "plus" | "search" | "map" | "toggle-on" | "check-square" | "play" | "search" | "book" | "note-sticky"; // Add more if needed
 
 interface ClickableLinkProps {
   href: string;
