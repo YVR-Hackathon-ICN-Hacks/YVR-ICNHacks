@@ -36,6 +36,11 @@ export default function StoryBook() {
         iconName="search"
         text="search bar"
       />
+      <Clickable
+        href="/storybook/textinput"
+        iconName="search"
+        text="text input"
+      />
     </View>
   );
 }
