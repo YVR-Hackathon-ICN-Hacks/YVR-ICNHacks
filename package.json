@@ -39,8 +39,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "~0.19.6",
-    "react-native-pager-view": "6.2.3"
-    "react-native-vector-icons": "^10.0.3",
+    "react-native-pager-view": "6.2.3",
+    "react-native-vector-icons": "^10.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
