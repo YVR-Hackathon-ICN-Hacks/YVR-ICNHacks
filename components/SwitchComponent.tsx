@@ -1,32 +1,36 @@
 import React, { useState } from 'react';
-import { Switch } from '@rneui/themed';
+import { Switch, SwitchProps } from '@rneui/themed';
 import { View, StyleSheet } from 'react-native';
 
-const SwitchComponent = (
-        { initialValue = false, onValueChange, style }: 
-        { initialValue?: boolean, onValueChange?: (value: boolean) => void, style?: any }
-    ) => {
+interface CustomSwitchProps extends SwitchProps {
+    initialValue?: boolean; 
+    onToggle?: (value: boolean) => void; 
+}
+
+const SwitchComponent: React.FC<CustomSwitchProps> = ({
+    initialValue = false,
+    onToggle,
+    ...switchProps
+  }) => {
     const [isEnabled, setIsEnabled] = useState(initialValue);
   
     const toggleSwitch = () => {
-        setIsEnabled(previousState => !previousState);
-        if (onValueChange) {
-            onValueChange(!isEnabled);
-        }
+      setIsEnabled(previousState => !previousState);
+      if (onToggle) {
+        onToggle(!isEnabled);
+      }
     };
   
     return (
-      <View style={[styles.container, style]}>
-            <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={isEnabled ? "#246ae0" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-            />
+      <View style={styles.container}>
+        <Switch
+          value={isEnabled}
+          onValueChange={toggleSwitch}
+          {...switchProps}
+        />
       </View>
     );
-  };
+};
 
 const styles = StyleSheet.create({
     container: {
