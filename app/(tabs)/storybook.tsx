@@ -21,6 +21,11 @@ export default function StoryBook() {
         iconName = "map"
         text="Google Map" 
       />
+      <Clickable 
+        href="/storybook/fetchTest"
+        iconName = "coffee"
+        text="fetchTest" 
+      />
     </View>
   );
 }
