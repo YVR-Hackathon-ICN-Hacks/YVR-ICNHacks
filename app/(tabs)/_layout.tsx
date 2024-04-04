@@ -6,8 +6,6 @@ import { Pressable } from "react-native";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import CameraScreen from "./camera"; // Import CameraScreen component
-import ListScreen from "./list"; // Import ListScreen component
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -54,6 +52,13 @@ export default function TabLayout() {
         name="two"
         options={{
           title: "Tab Two",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="storybook"
+        options={{
+          title: "StoryBook",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
