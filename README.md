@@ -2,8 +2,14 @@
 
 Starter for expo go
 
-To run the project on ios, run the command:
+To generate build for android and ios, run the command:
 
 ```
-npx expo run ios
+npx expo prebuild
+```
+
+To run the project, run the command:
+
+```
+npx expo run ios/android/web
 ```

@@ -1,7 +1,6 @@
 import { User } from "./model/user";
 
-// Need to be updated with the correct URL
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://yvr-icn-hacks-server.vercel.app/api';
 
 export async function getUserData(route: string): Promise<any> {
   try {
