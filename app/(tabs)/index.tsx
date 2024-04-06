@@ -1,106 +1,125 @@
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 
+import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useColorScheme } from "@/components/useColorScheme";
 
-export default function LandingOne() {
+const data = [
+  { id: 1, name: "John Doe", age: 30, job: "Engineer" },
+  { id: 2, name: "Jane Smith", age: 25, job: "Designer" },
+  { id: 3, name: "Michael Brown", age: 35, job: "Manager" },
+];
+
+type ItemType = {
+  id: number;
+  name: string;
+  age: number;
+  job: string;
+};
+
+export default function LandingTwo() {
   const navigation = useNavigation();
-  const colorScheme = useColorScheme();
+  const renderItem: ({ item }: { item: ItemType }) => JSX.Element = ({
+    item,
+  }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.name}</Text>
+      <Text style={styles.cell}>{item.age}</Text>
+      <Text style={styles.cell}>{item.job}</Text>
+    </View>
+  );
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View
-        style={
-          (styles.container,
-          { backgroundColor: colorScheme === "dark" ? "#101010" : "#ffffff" })
-        }
-      >
-        <View style={styles.lineBlock}></View>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Welcome! (name)</Text>
-          <Text style={styles.description}>Explore features</Text>
-        </View>
-        <View style={styles.lineBlock}></View>
-        <View style={styles.itemBlock}>
-          <Text style={styles.textStyle}>Main</Text>
-        </View>
-        <View style={styles.itemContainer}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("details", { id: 1 }); //maybe assign types later
-              }}
-              style={styles.viewStyle}
-            >
-              <View>
-                <Text style={styles.textStyle}>Item 1</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("details", { id: 2 });
-              }}
-              style={styles.viewStyle}
-            >
-              <View>
-                <Text style={styles.textStyle}>Item 2</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("details", { id: 3 });
-              }}
-              style={styles.viewStyle}
-            >
-              <View>
-                <Text style={styles.textStyle}>Item 3</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("details", { id: 4 });
-              }}
-              style={styles.viewStyle}
-            >
-              <View>
-                <Text style={styles.textStyle}>Item 4</Text>
-              </View>
-            </Pressable>
-          </ScrollView>
+    <View style={styles.container}>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>Heat/Insulation</Text>
+        <Text style={styles.title}>Management Platform</Text>
+      </View>
+      <View style={styles.statusContainer}>
+        <View style={styles.itemStyle}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Daily Reports</Text>
+          </View>
         </View>
       </View>
-    </ScrollView>
+      <View style={styles.buttonContainer}>
+        {/* 첫 번째 줄 */}
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              navigation.navigate("pages", { context: "Thermal Data" })
+            }
+          >
+            <MaterialIcons name="info" style={styles.iconStyle}></MaterialIcons>
+            <Text style={styles.buttonText}>Status</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              navigation.navigate("pages", { context: "Sensor Locations" })
+            }
+          >
+            <MaterialIcons
+              name="event"
+              style={styles.iconStyle}
+            ></MaterialIcons>
+            <Text style={styles.buttonText}>Event</Text>
+          </TouchableOpacity>
+        </View>
+        {/* 두 번째 줄 */}
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              navigation.navigate("pages", { context: "HAVC performance" })
+            }
+          >
+            <MaterialIcons
+              name="analytics"
+              style={styles.iconStyle}
+            ></MaterialIcons>
+            <Text style={styles.buttonText}>Statistics</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              navigation.navigate("pages", { context: "Sunlight exposure" })
+            }
+          >
+            <MaterialIcons
+              name="assignment"
+              style={styles.iconStyle}
+            ></MaterialIcons>
+            <Text style={styles.buttonText}>Manual</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  lineBlock: {
-    height: 10,
-  },
-  itemBlock: {
-    width: 330,
-    height: 330,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10, // Adjust the value as needed for rounded border
-    elevation: 5, // Shadow elevation (Android specific)
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
-    shadowOpacity: 0.25, // Shadow opacity
-    shadowRadius: 3, // Shadow radius
-    margin: 10,
-    backgroundColor: "#ffffff",
+  block: {
+    height: 100,
   },
   container: {
     flex: 1,
     //alignItems: 'center',
     justifyContent: "center",
+    backgroundColor: "#8cb0ce",
   },
   title: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: "bold",
+    color: "white",
   },
   description: {
     fontSize: 20,
@@ -111,37 +130,75 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   textContainer: {
-    alignItems: "flex-start",
+    alignItems: "center",
     // borderWidth: 1, // Border width
     // borderColor: '#ccc',
-    paddingLeft: 30,
+    backgroundColor: "rgba(255, 255, 255, 0)", // 흰색의 0% 투명 배경
+    marginTop: 20,
+    marginBottom: 20,
   },
-  itemContainer: {
+  statusContainer: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20, // Adjust as needed for horizontal padding
-    marginTop: 20, // Adjust as needed for top margin
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0)", // 흰색의 0% 투명 배경
   },
-  viewStyle: {
-    backgroundColor: "#ffffff",
+  itemStyle: {
     flex: 1,
-    width: 200,
-    height: 200,
+    width: "90%",
+    height: "50%",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10, // Adjust the value as needed for rounded border
-    elevation: 5, // Shadow elevation (Android specific)
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
-    shadowOpacity: 0.25, // Shadow opacity
-    shadowRadius: 3, // Shadow radius
-    margin: 10,
   },
-  textStyle: {
-    fontSize: 20,
-    padding: 15,
-    color: "black",
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    paddingVertical: 10,
+  },
+  cell: {
+    flex: 1,
+    fontSize: 16,
+  },
+  buttonContainer: {
+    width: "100%",
+    backgroundColor: "#5d8bb0",
+    padding: 20,
+    marginTop: 20,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10, // 버튼 간의 간격 조절
+    backgroundColor: "rgba(255, 255, 255, 0)", // 흰색의 0% 투명 배경
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "45%", // 버튼의 너비 조절
+    height: 50, // 버튼의 높이 조절
     backgroundColor: "#ffffff",
-    textAlign: "center",
+    borderRadius: 10,
+  },
+  iconStyle: {
+    fontSize: 25,
+    marginLeft: 20,
+  },
+  buttonText: {
+    color: "#5d8bb0",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 20,
   },
 });
