@@ -26,13 +26,7 @@ export default function LandingOne() {
           <Text style={styles.textStyle}>Main</Text>
         </View>
         <View style={styles.itemContainer}>
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={() => {
-              console.log("Scrolling is End");
-            }}
-          >
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <Pressable
               onPress={() => {
                 navigation.navigate("details", { id: 1 }); //maybe assign types later
