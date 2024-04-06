@@ -4,7 +4,7 @@ import { Text, View } from "@/components/Themed";
 
 export default function MiniTabTwo() {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} lightColor="#FFFFFF" darkColor="#101010">
       <Text style={styles.title}>Mni Tab Two</Text>
       <View
         style={styles.separator}

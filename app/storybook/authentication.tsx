@@ -58,14 +58,9 @@ export default function Authentication() {
   };
 
   return (
-    <View style={styles.container}>
+    <View lightColor="#FFFFFF" darkColor="#101010" style={styles.container}>
       <Text style={styles.title}>Authentication</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <View style={{ padding: 10 }}>
+      <View lightColor="#FFFFFF" darkColor="#101010" style={{ padding: 10 }}>
         <Text>{JSON.stringify(userInfo, null, 2)}</Text>
       </View>
       <Button title="Login with Google" onPress={() => promptAsync()} />
@@ -86,10 +81,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+    paddingBottom: 20,
   },
 });

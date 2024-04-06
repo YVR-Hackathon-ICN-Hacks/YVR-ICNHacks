@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#eee",
   },
   title: {
     fontSize: 20,
@@ -53,7 +52,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    backgroundColor: "#eee",
     alignItems: "center",
     justifyContent: "center",
   },
