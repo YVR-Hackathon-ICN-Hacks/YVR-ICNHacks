@@ -8,6 +8,10 @@ node_modules/
 dist/
 web-build/
 
+# Build files
+android/
+ios/
+
 # Native
 *.orig.*
 *.jks
@@ -30,6 +34,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
