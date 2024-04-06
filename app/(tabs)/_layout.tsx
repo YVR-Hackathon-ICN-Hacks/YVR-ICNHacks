@@ -49,9 +49,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="landing_two"
+        name="two"
         options={{
           title: "Landing Two",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="storybook"
+        options={{
+          title: "Storybook",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
