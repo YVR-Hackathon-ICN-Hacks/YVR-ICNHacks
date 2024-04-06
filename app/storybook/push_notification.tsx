@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Clickable from "@/components/Clickable";
 import { usePushNotifications } from "@/constants/usePushNotifications";
@@ -17,16 +17,37 @@ export default function PushNotification() {
     });
   }, [navigation]);
 
+  // create backend api call for this
+  const sendNotification = async () => {
+    await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: expoPushToken?.data,
+        sound: "default",
+        title: "Notification Title 🙏",
+        body: "Hello worthy user! 🎉",
+        data: { someData: "data" },
+      }),
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Clickable
-        onPress={() => {}}
-        text="Send notification"
-        iconName="bell"
-        href="/storybook/push_notification"
-      />
-      <Text>{data}</Text>
-      <Text>Token: {expoPushToken?.data ?? ""}</Text>
+      <ScrollView>
+        <Clickable
+          onPress={sendNotification}
+          text="Send notification"
+          iconName="bell"
+          href="/storybook/push_notification"
+        />
+        <Text darkColor="#000000">{data}</Text>
+        <Text darkColor="#000000">Token: {expoPushToken?.data ?? ""}</Text>
+      </ScrollView>
     </SafeAreaView>
   );
 }
