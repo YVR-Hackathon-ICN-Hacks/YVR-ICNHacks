@@ -31,6 +31,11 @@ export default function StoryBook() {
         iconName = "coffee"
         text="fetchTest" 
       />
+      <Clickable
+        href="/storybook/(thermal_data)"
+        iconName="plus"
+        text="Thermal Data"
+      />
     </View>
   );
 }
