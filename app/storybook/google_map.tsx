@@ -1,6 +1,10 @@
 import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { View, Text } from "@/components/Themed";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 import React, { useEffect, useRef, useState } from "react";
 import { Platform, PermissionsAndroid } from "react-native";
 import {
@@ -191,7 +195,9 @@ export default function GoogleMap() {
         />
         <MapView
           ref={mapRef}
-          provider={PROVIDER_GOOGLE}
+          provider={
+            Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+          }
           initialRegion={initialRegion}
           style={styles.map}
           onPress={handleMapPress}
