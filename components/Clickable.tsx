@@ -5,7 +5,14 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 
-type IconName = "refresh" | "home" | "plus" | "search" | "map" | "bell" | "coffee"; 
+type IconName =
+  | "refresh"
+  | "home"
+  | "plus"
+  | "search"
+  | "map"
+  | "bell"
+  | "coffee";
 
 interface ClickableLinkProps {
   href: string;
@@ -41,7 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#abdbe3",
     padding: 10,
     borderRadius: 10,
-    width: "60%",
+    width: "70%",
     alignSelf: "center",
   },
   pressable: {

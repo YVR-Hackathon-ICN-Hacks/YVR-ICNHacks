@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet, SafeAreaView, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Clickable from "@/components/Clickable";
 import { usePushNotifications } from "@/constants/usePushNotifications";
@@ -39,14 +39,16 @@ export default function PushNotification() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Clickable
-          onPress={sendNotification}
-          text="Send notification"
-          iconName="bell"
-          href="/storybook/push_notification"
-        />
-        <Text darkColor="#000000">{data}</Text>
-        <Text darkColor="#000000">Token: {expoPushToken?.data ?? ""}</Text>
+        <View style={{ padding: 30 }}>
+          <Clickable
+            onPress={sendNotification}
+            text="Send notification"
+            iconName="bell"
+            href="/storybook/push_notification"
+          />
+          <Text>{data}</Text>
+          <Text>Token: {expoPushToken?.data ?? ""}</Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -56,6 +58,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#eee",
   },
 });
