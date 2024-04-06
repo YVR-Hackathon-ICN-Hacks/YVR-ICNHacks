@@ -5,21 +5,22 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 
-type IconName = "refresh" | "home" | "plus" | "search" | "map" | "coffee"; // Add more if needed
+type IconName = "refresh" | "home" | "plus" | "search" | "map" | "bell" | "coffee"; 
 
 interface ClickableLinkProps {
   href: string;
   iconName: IconName;
   text: string;
+  onPress?: () => void;
 }
 
-const Clickable = ({ href, iconName, text }: ClickableLinkProps) => {
+const Clickable = ({ href, iconName, text, onPress }: ClickableLinkProps) => {
   const colorScheme = useColorScheme();
 
   return (
     <View style={styles.clickable}>
       <Link href={href} asChild>
-        <Pressable style={styles.pressable}>
+        <Pressable style={styles.pressable} onPress={onPress}>
           <>
             <FontAwesome
               name={iconName}
@@ -40,6 +41,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#abdbe3",
     padding: 10,
     borderRadius: 10,
+    width: "60%",
+    alignSelf: "center",
   },
   pressable: {
     flexDirection: "row",
@@ -47,6 +50,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+    textAlign: "center",
   },
 });
 

@@ -21,6 +21,11 @@ export default function StoryBook() {
         iconName = "map"
         text="Google Map" 
       />
+      <Clickable
+        href="/storybook/push_notification"
+        iconName="bell"
+        text="Push Notification"
+      />
       <Clickable 
         href="/storybook/fetchTest"
         iconName = "coffee"
