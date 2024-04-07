@@ -41,6 +41,11 @@ export default function StoryBook() {
         iconName="plus"
         text="Sunlight Exposure"
       />
+      <Clickable
+        href="/storybook/(hvac_performance)"
+        iconName="plus"
+        text="HVAC Performance"
+      />
     </View>
   );
 }
