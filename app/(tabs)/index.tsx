@@ -10,6 +10,7 @@ import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import ButtonComponent from "@/components/landingButton";
 
 const data = [
   { id: 1, name: "John Doe", age: 30, job: "Engineer" },
@@ -24,7 +25,7 @@ type ItemType = {
   job: string;
 };
 
-export default function LandingTwo() {
+export default function Landing() {
   const navigation = useNavigation();
   const renderItem: ({ item }: { item: ItemType }) => JSX.Element = ({
     item,
@@ -52,54 +53,33 @@ export default function LandingTwo() {
       <View style={styles.buttonContainer}>
         {/* 첫 번째 줄 */}
         <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() =>
-              navigation.navigate("pages", { context: "Thermal Data" })
-            }
+          <ButtonComponent
+            value="Thermal Data"
+            iconName="info"
+            information="inside Thermal Data"
           >
-            <MaterialIcons name="info" style={styles.iconStyle}></MaterialIcons>
-            <Text style={styles.buttonText}>Status</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() =>
-              navigation.navigate("pages", { context: "Sensor Locations" })
-            }
+          </ButtonComponent>
+          <ButtonComponent
+            value="Sensor Locations"
+            iconName="event"
+            information="inside Sensor Locations"
           >
-            <MaterialIcons
-              name="event"
-              style={styles.iconStyle}
-            ></MaterialIcons>
-            <Text style={styles.buttonText}>Event</Text>
-          </TouchableOpacity>
+          </ButtonComponent>
         </View>
         {/* 두 번째 줄 */}
         <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() =>
-              navigation.navigate("pages", { context: "HAVC performance" })
-            }
+          <ButtonComponent
+            value="HAVC performance"
+            iconName="analytics"
+            information="inside HAVC performance"
           >
-            <MaterialIcons
-              name="analytics"
-              style={styles.iconStyle}
-            ></MaterialIcons>
-            <Text style={styles.buttonText}>Statistics</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() =>
-              navigation.navigate("pages", { context: "Sunlight exposure" })
-            }
+          </ButtonComponent>
+          <ButtonComponent
+            value="Sunlight exposure"
+            iconName="assignment"
+            information="inside Sunlight exposure"
           >
-            <MaterialIcons
-              name="assignment"
-              style={styles.iconStyle}
-            ></MaterialIcons>
-            <Text style={styles.buttonText}>Manual</Text>
-          </TouchableOpacity>
+          </ButtonComponent>
         </View>
       </View>
     </View>
@@ -181,24 +161,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10, // 버튼 간의 간격 조절
     backgroundColor: "rgba(255, 255, 255, 0)", // 흰색의 0% 투명 배경
-  },
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "45%", // 버튼의 너비 조절
-    height: 50, // 버튼의 높이 조절
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-  },
-  iconStyle: {
-    fontSize: 25,
-    marginLeft: 20,
-  },
-  buttonText: {
-    color: "#5d8bb0",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 20,
-  },
+  }
 });
