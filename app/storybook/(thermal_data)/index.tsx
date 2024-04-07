@@ -3,6 +3,8 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Text, View } from '@/components/Themed';
 
+const screenWidth = Dimensions.get('window').width - 16;
+
 function getRandomInt(min: number, max: number, num: number) {
   var random_ints = []
   for (let i = 0; i < num; i++) {
@@ -13,11 +15,11 @@ function getRandomInt(min: number, max: number, num: number) {
 
 const exampleDatasets = [
   {
-    data: getRandomInt(18, 40, 9),
+    data: getRandomInt(18, 40, 5),
     color:() => 'blue'
   },
   {
-    data: getRandomInt(18, 40, 9),
+    data: getRandomInt(18, 40, 5),
     color:() => 'red'
   },
 ]
@@ -28,11 +30,11 @@ export default function LineChartTab() {
       <Text style={styles.header}>Line Chart Example</Text>
       <LineChart
         data={{
-          labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+          labels: ['08:00', '12:00', '16:00', '20:00', '00:00'],
           datasets: exampleDatasets,
           legend: ['Room1', 'Room2']
         }}
-        width={Dimensions.get('window').width - 16}
+        width={screenWidth}
         height={300}
         yAxisSuffix="°C"
         yAxisInterval={2}
@@ -44,7 +46,7 @@ export default function LineChartTab() {
           color: (opacity = 1) => `rgba(0, 121, 191, ${opacity})`, // Deep sky blue for contrast
           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           style: {
-            borderRadius: 12
+            borderRadius: 12,
           },
           propsForDots: {
             r: "3",
