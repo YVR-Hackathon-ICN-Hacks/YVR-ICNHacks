@@ -4,7 +4,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { useNavigation } from "@react-navigation/native";
 import LineChartTab from ".";
 import BarChartTab from "./barchart";
-import GroupedBarChartTab from "./groupedbarchart";
+import AreaChartTab from "./areachart";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -13,16 +13,16 @@ export default function TabLayout() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "Thermal Data",
+      headerTitle: "Sunlight Exposure",
     });
   }, [navigation]);
 
   return (
-    <Tab.Navigator initialRouteName="ThermalData">
+    <Tab.Navigator initialRouteName="SunlightExposure">
       <Tab.Group>
         <Tab.Screen name="Line Chart" component={LineChartTab} />
         <Tab.Screen name="Bar Chart" component={BarChartTab} />
-        <Tab.Screen name="Grouped Bar Chart" component={GroupedBarChartTab} />
+        <Tab.Screen name="Area Chart" component={AreaChartTab} />
       </Tab.Group>
     </Tab.Navigator>
   );

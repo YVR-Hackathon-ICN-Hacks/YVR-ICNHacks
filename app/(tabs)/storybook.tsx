@@ -36,6 +36,11 @@ export default function StoryBook() {
         iconName="plus"
         text="Thermal Data"
       />
+      <Clickable
+        href="/storybook/(sunlight_exposure)"
+        iconName="plus"
+        text="Sunlight Exposure"
+      />
     </View>
   );
 }
