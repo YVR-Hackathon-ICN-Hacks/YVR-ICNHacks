@@ -5,7 +5,11 @@ export default function StoryBook() {
   return (
     <View style={styles.container}>
       <View style={styles.separator} />
-      <Clickable href="/storybook/refresh" iconName="refresh" text="Refresh" />
+      <Clickable
+        href="/(auth)/storybook/refresh"
+        iconName="refresh"
+        text="Refresh"
+      />
       <Clickable
         href="/storybook/authentication"
         iconName="home"
@@ -15,21 +19,21 @@ export default function StoryBook() {
         href="/storybook/(ministack)"
         iconName="plus"
         text="Top Stack Navigator"
-         />
-      <Clickable 
+      />
+      <Clickable
         href="/storybook/google_map"
-        iconName = "map"
-        text="Google Map" 
+        iconName="map"
+        text="Google Map"
       />
       <Clickable
         href="/storybook/push_notification"
         iconName="bell"
         text="Push Notification"
       />
-      <Clickable 
+      <Clickable
         href="/storybook/fetchTest"
-        iconName = "coffee"
-        text="fetchTest" 
+        iconName="coffee"
+        text="fetchTest"
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { StyleSheet, SafeAreaView, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Clickable from "@/components/Clickable";
