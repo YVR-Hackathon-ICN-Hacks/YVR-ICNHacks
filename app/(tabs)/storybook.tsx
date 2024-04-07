@@ -31,6 +31,21 @@ export default function StoryBook() {
         iconName = "coffee"
         text="fetchTest" 
       />
+      <Clickable
+        href="/storybook/(thermal_data)"
+        iconName="plus"
+        text="Thermal Data"
+      />
+      <Clickable
+        href="/storybook/(sunlight_exposure)"
+        iconName="plus"
+        text="Sunlight Exposure"
+      />
+      <Clickable
+        href="/storybook/(hvac_performance)"
+        iconName="plus"
+        text="HVAC Performance"
+      />
     </View>
   );
 }
