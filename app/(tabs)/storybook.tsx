@@ -32,6 +32,11 @@ export default function StoryBook() {
         text="fetchTest" 
       />
       <Clickable
+        href="/storybook/list"
+        iconName="list"
+        text="Lists"
+      />
+      <Clickable
         href="/storybook/(thermal_data)"
         iconName="plus"
         text="Thermal Data"

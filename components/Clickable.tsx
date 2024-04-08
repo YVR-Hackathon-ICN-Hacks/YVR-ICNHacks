@@ -12,6 +12,7 @@ type IconName =
   | "search"
   | "map"
   | "bell"
+  | "list"
   | "coffee";
 
 interface ClickableLinkProps {
