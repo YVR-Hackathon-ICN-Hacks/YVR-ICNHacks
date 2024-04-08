@@ -1,8 +1,11 @@
 import { View, StyleSheet } from "react-native";
 import Clickable from "@/components/Clickable";
+import { ScrollView } from "react-native";
 
 export default function StoryBook() {
   return (
+            <ScrollView>
+
     <View style={styles.container}>
       <View style={styles.separator} />
       <Clickable href="/storybook/refresh" iconName="refresh" text="Refresh" />
@@ -52,6 +55,8 @@ export default function StoryBook() {
         text="HVAC Performance"
       />
     </View>
+          </ScrollView>
+
   );
 }
 
@@ -62,7 +67,7 @@ const styles = StyleSheet.create({
     rowGap: 20,
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 10,
     height: 1,
     width: "80%",
   },
