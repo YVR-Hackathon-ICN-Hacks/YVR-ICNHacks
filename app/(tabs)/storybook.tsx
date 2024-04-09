@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     rowGap: 20,
+    paddingBottom: 20,
   },
   separator: {
     marginVertical: 10,

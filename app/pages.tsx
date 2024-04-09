@@ -1,6 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet } from "react-native";
-import EditScreenInfo from "@/components/EditScreenInfo";
+import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useRoute } from "@react-navigation/native";
 import { RouteProp } from "@react-navigation/native";
@@ -12,24 +11,26 @@ export default function Pages() {
   const context = route.params.context;
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#ffffff",
+      }}
+    >
+      <StatusBar style="dark" />
       <Text style={styles.title}>{context}</Text>
       <View style={styles.separator} />
-      <EditScreenInfo path="app/pages.tsx" />
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#000000",
   },
   separator: {
     marginVertical: 30,
