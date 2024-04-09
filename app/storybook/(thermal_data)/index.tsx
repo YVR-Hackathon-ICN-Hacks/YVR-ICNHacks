@@ -5,11 +5,12 @@ import { LineChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
 import data from "../../../constants/data.json";
 import allData from "../../../constants/allData.json";
+import { Reading } from "@/types/types";
 
 export default function LineChartTab() {
   const entireData = allData.flatMap((locationData) =>
     Object.entries(locationData).flatMap(([location, readings]) =>
-      readings.map((reading) => ({
+      readings.map((reading: Reading) => ({
         ...reading,
         Location: location,
       }))
@@ -80,7 +81,10 @@ export default function LineChartTab() {
 
   const RT_AV_TL_Data = hourlyData.map((item) => {
     const filteredKeys = Object.keys(item).filter((key) => key.includes("RT"));
-    const values = filteredKeys.map((key) => item[key]); // resolve types later
+    const values = filteredKeys.map((key) => {
+      const value = item[key as keyof typeof item] as number;
+      return value;
+    });
     return values;
   });
 

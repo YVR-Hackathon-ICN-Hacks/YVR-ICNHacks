@@ -1,16 +1,11 @@
 import { StyleSheet } from "react-native";
-
 import { Text, View } from "@/components/Themed";
 
 export default function MiniTabTwo() {
   return (
-    <View style={styles.container} lightColor="#FFFFFF" darkColor="#101010">
+    <View style={styles.container}>
       <Text style={styles.title}>Mni Tab Two</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <View style={styles.separator} />
       <Text>Swipe Left or Right</Text>
     </View>
   );

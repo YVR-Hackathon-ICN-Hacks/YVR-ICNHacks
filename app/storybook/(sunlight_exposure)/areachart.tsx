@@ -1,19 +1,18 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { LineChart } from 'react-native-gifted-charts';
+import { LineChart } from "react-native-gifted-charts";
 import { Text, View } from "@/components/Themed";
 
 const screenWidth = Dimensions.get("window").width;
 
 const sunlightData = [
-  {value: 2, label: '00:00'},
-  {value: 2.25, label: '04:00'},
-  {value: 5.75, label: '08:00'},
-  {value: 4.8, label: '12:00'},
-  {value: 2.2, label: '16:00'},
-  {value: 1.5, label: '20:00'},
-  {value: 0, label: '24:00'},
-]
-
+  { value: 2, label: "00:00" },
+  { value: 2.25, label: "04:00" },
+  { value: 5.75, label: "08:00" },
+  { value: 4.8, label: "12:00" },
+  { value: 2.2, label: "16:00" },
+  { value: 1.5, label: "20:00" },
+  { value: 0, label: "24:00" },
+];
 
 export default function AreaChartTab() {
   return (
@@ -73,4 +72,3 @@ const styles = StyleSheet.create({
     width: "80%",
   },
 });
-

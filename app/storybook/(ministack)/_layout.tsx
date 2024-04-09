@@ -1,5 +1,4 @@
 import React, { useLayoutEffect } from "react";
-
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useNavigation } from "@react-navigation/native";
 import MiniTabOne from ".";

@@ -1,17 +1,16 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
-
+import { StyleSheet, Dimensions } from "react-native";
+import { BarChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
 
-const screenWidth = Dimensions.get('window').width - 16;
+const screenWidth = Dimensions.get("window").width - 16;
 
 const data = {
   labels: ["Mon", "Tue", "Wed", "Thr", "Fri", "Sat", "Sun"],
   datasets: [
     {
       data: [27.23, 25.14, 26.21, 29.67, 28.65, 26.54, 25.35],
-    }
-  ]
+    },
+  ],
 };
 
 const chartConfig = {
@@ -29,7 +28,7 @@ const chartConfig = {
 
 export default function BarChartTab() {
   return (
-    <View style={styles.container} lightColor="#FFFFFF" darkColor="#101010">
+    <View style={styles.container}>
       <Text style={styles.header}>Weekly Average Temperature</Text>
       <BarChart
         data={data}
