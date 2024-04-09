@@ -1,18 +1,29 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
-
+import { StyleSheet, Dimensions } from "react-native";
+import { BarChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
 
-const screenWidth = Dimensions.get('window').width - 16;
-
+const screenWidth = Dimensions.get("window").width - 16;
 
 const energyConsumptionData = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  labels: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ],
   datasets: [
     {
       data: [300, 280, 250, 220, 210, 230, 240, 260, 250, 270, 290, 310],
-    }
-  ]
+    },
+  ],
 };
 
 const chartConfig = {

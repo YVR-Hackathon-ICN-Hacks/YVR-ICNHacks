@@ -4,23 +4,7 @@ import { Link } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-
-type IconName =
-  | "refresh"
-  | "home"
-  | "plus"
-  | "search"
-  | "map"
-  | "bell"
-  | "list"
-  | "coffee";
-
-interface ClickableLinkProps {
-  href: string;
-  iconName: IconName;
-  text: string;
-  onPress?: () => void;
-}
+import { ClickableLinkProps } from "@/types/types";
 
 const Clickable = ({ href, iconName, text, onPress }: ClickableLinkProps) => {
   const colorScheme = useColorScheme();

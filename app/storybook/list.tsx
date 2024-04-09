@@ -1,10 +1,5 @@
 import { useState, useRef, useLayoutEffect } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import { SwipeListView } from "react-native-swipe-list-view";
@@ -21,7 +16,7 @@ export default function ListScreen() {
   };
 
   const deleteItem = () => {
-    setList([]); // Clear the entire list
+    setList([]);
   };
 
   const deleteSpecificItem = (rowMap: RowMap, itemToDelete: string) => {
@@ -120,7 +115,7 @@ export default function ListScreen() {
           </View>
         )}
         leftOpenValue={160}
-        rightOpenValue={0} // Add this line to disable swipe from right to left
+        rightOpenValue={0}
         keyExtractor={(item, index) => item.name}
       />
     </View>
@@ -141,27 +136,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flexDirection: "row",
   },
-  rightAction: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-    width: 80,
-  },
-  deleteText: {
-    color: "white",
-    fontWeight: "bold",
-  },
   itemContainer: {
     backgroundColor: "white",
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
     padding: 10,
     width: "100%",
-    alignItems: "center", // Ensure the items within this container are vertically centered
+    alignItems: "center",
   },
   hiddenItemContainer: {
     flexDirection: "row",
-    justifyContent: "flex-start", 
+    justifyContent: "flex-start",
     padding: 10,
     height: 58,
   },
@@ -187,13 +172,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     left: 5,
-  },
-  copyButton: {
-    backgroundColor: "blue", // Choose an appropriate color
-    justifyContent: "center",
-    alignItems: "center",
-    width: 70,
-    height: 55,
-    borderRadius: 10,
   },
 });

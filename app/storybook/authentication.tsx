@@ -58,9 +58,9 @@ export default function Authentication() {
   };
 
   return (
-    <View lightColor="#FFFFFF" darkColor="#101010" style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Authentication</Text>
-      <View lightColor="#FFFFFF" darkColor="#101010" style={{ padding: 10 }}>
+      <View style={{ padding: 10 }}>
         <Text>{JSON.stringify(userInfo, null, 2)}</Text>
       </View>
       <Button title="Login with Google" onPress={() => promptAsync()} />

@@ -1,11 +1,8 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React from "react";
+import { StyleSheet } from "react-native";
 
-import { ExternalLink } from './ExternalLink';
-import { MonoText } from './StyledText';
-import { Text, View } from './Themed';
-
-import Colors from '@/constants/Colors';
+import { MonoText } from "./StyledText";
+import { Text, View } from "./Themed";
 
 export default function EditScreenInfo({ path }: { path: string }) {
   return (
@@ -14,22 +11,26 @@ export default function EditScreenInfo({ path }: { path: string }) {
         <Text
           style={styles.getStartedText}
           lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
+          darkColor="rgba(255,255,255,0.8)"
+        >
           Open up the code for this screen:
         </Text>
 
         <View
           style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
           darkColor="rgba(255,255,255,0.05)"
-          lightColor="rgba(0,0,0,0.05)">
+          lightColor="rgba(0,0,0,0.05)"
+        >
           <MonoText>{path}</MonoText>
         </View>
 
         <Text
           style={styles.getStartedText}
           lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Change any of the text, save the file, and your app will automatically update. Testing
+          darkColor="rgba(255,255,255,0.8)"
+        >
+          Change any of the text, save the file, and your app will automatically
+          update. Testing
         </Text>
       </View>
     </View>
@@ -38,7 +39,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
 
 const styles = StyleSheet.create({
   getStartedContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 50,
   },
   homeScreenFilename: {
@@ -51,12 +52,12 @@ const styles = StyleSheet.create({
   getStartedText: {
     fontSize: 17,
     lineHeight: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   helpLink: {
     paddingVertical: 15,
   },
   helpLinkText: {
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

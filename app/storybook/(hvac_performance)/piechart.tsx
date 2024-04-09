@@ -1,15 +1,38 @@
-import { StyleSheet, Dimensions } from 'react-native';
-// import { PieChart } from 'react-native-gifted-charts';
-import { PieChart } from 'react-native-chart-kit';
+import { StyleSheet, Dimensions } from "react-native";
+import { PieChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
 
-const screenWidth = Dimensions.get('window').width - 16;
+const screenWidth = Dimensions.get("window").width - 16;
 
 const hvacLoadDistributionData = [
-  { name: "Heating", population: 40, color: "#F66D44", legendFontColor: "#7F7F7F", legendFontSize: 15 },
-  { name: "Cooling", population: 30, color: "#E6F69D", legendFontColor: "#7F7F7F", legendFontSize: 15 },
-  { name: "Ventilation", population: 20, color: "#64C2A6", legendFontColor: "#7F7F7F", legendFontSize: 15 },
-  { name: "Dehumidification", population: 10, color: "#2D87BB", legendFontColor: "#7F7F7F", legendFontSize: 15 }
+  {
+    name: "Heating",
+    population: 40,
+    color: "#F66D44",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  },
+  {
+    name: "Cooling",
+    population: 30,
+    color: "#E6F69D",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  },
+  {
+    name: "Ventilation",
+    population: 20,
+    color: "#64C2A6",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  },
+  {
+    name: "Dehumidification",
+    population: 10,
+    color: "#2D87BB",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  },
 ];
 
 const chartConfig = {
@@ -38,7 +61,7 @@ export default function PieChartTab() {
         absolute
       />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
