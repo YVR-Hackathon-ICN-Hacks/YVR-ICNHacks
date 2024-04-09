@@ -20,8 +20,8 @@ export default function TabLayout() {
     <Tab.Navigator initialRouteName="ThermalData">
       <Tab.Group>
         <Tab.Screen name="Line Chart" component={LineChartTab} />
+        <Tab.Screen name="Line Chart API" component={GroupedBarChartTab} />
         <Tab.Screen name="Bar Chart" component={BarChartTab} />
-        <Tab.Screen name="Grouped Bar Chart" component={GroupedBarChartTab} />
       </Tab.Group>
     </Tab.Navigator>
   );
