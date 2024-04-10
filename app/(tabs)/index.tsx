@@ -1,205 +1,97 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SwipeRow } from "react-native-swipe-list-view";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { getAbnormalData } from "@/api/abnormalData/abnormalDataApi";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import React from "react";
+import { useQuery } from "react-query";
 import { Dropdown } from 'react-native-element-dropdown';
 
 
+// const queryClient = new QueryClient();
 type RowMap = { [key: string]: SwipeRow<any> };
 
 // 0이 제일 좋은거 1이 두번째로 좋은거 2가 제일 나쁜거
-const mockData = [
-  {
-    id: 1,
-    areaCode: "A1",
-    priority: 2,
-    timestamp: "2021-09-01 12:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  },
-  {
-    id: 2,
-    areaCode: "A1",
-    priority: 1,
-    timestamp: "2021-09-01 16:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  },
-  {
-    id: 3,
-    areaCode: "A2",
-    priority: 0,
-    timestamp: "2021-09-01 12:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: true,
-  },
-  {
-    id: 4,
-    areaCode: "A5",
-    priority: 0,
-    timestamp: "2021-08-24 06:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  },
-  {
-    id: 5,
-    areaCode: "A5",
-    priority: 0,
-    timestamp: "2021-09-01 20:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  },
-  {
-    id: 6,
-    areaCode: "A5",
-    priority: 0,
-    timestamp: "2021-09-01 14:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  },
-  {
-    id: 7,
-    areaCode: "A5",
-    priority: 2,
-    timestamp: "2021-09-03 12:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  },
-  {
-    id: 8,
-    areaCode: "A5",
-    priority: 0,
-    timestamp: "2021-09-01 12:00:00",
-    temperature: 0,
-    airflow: 2,
-    co2: 1,
-    solved: false,
-  }
+
+const getPriorityColor = (priority: Number) => {
+  if (priority === 0) {
+    return "#228B22";
+  } else if (priority === 1) {
+    return "#E3B23C";
+  } else {
+    return "#D22B2B";
+  };
+}
+
+
+const sortOptions = [
+  { label: "Priority", value: "0" },
+  { label: "Datetime (New)", value: "1" },
 ]
 
-// async function getData() {
-//   let data = await getAbnormalData();
-//   data = data.abnormalData;
-// }
-
+const filterOptions = [
+  { label: "All", value: "0" },
+  { label: "Caution", value: "1" },
+  { label: "Bad", value: "2" },
+  { label: "Very bad", value: "3" },
+]
 
 export default function Landing() {
-  let data = [];
-
-  async function getData() {
-    data = await getAbnormalData();
-    data = data.abnormalData;
-  }
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const [list, setList] = useState(mockData.filter(item => !item.solved));
-
-  const deleteSpecificItem = (rowMap: RowMap, itemToDelete: number) => {
-
-    if (rowMap[itemToDelete]) {
-      rowMap[itemToDelete].closeRow();
-    }
-
-    setList((currentList) => {
-      const newList = [];
-      for (let item of currentList) {
-        if (item.id === itemToDelete) {
-
-          const updatedItem = { ...item, solved: true }; // 현재 list에 있는 item을 수정
-          mockData[item.id - 1] = updatedItem; // mockdata 수정
-
-          if (!updatedItem.solved) {
-            newList.push(updatedItem);
-          }
-        } else {
-          newList.push(item);
-        }
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataList, setDataList] = useState([]);
+  const [abnormalData, setAbnormalData] = useState([]);
+  const { data: data, isLoading: isAbnormalDataLoading } = useQuery('abnormalData', getAbnormalData, {
+    onSuccess: (data) => {
+      if (data.abnormalData.data.length > 0) {
+        setIsLoading(true);
+        const abnormalDataList = data?.abnormalData.data || [];
+        setDataList(abnormalDataList.filter((item: { solved: any; }) => !item.solved));
+        setAbnormalData(abnormalDataList.filter((item: { solved: any; }) => !item.solved));
+        setIsLoading(false);
       }
-      return newList;
-    });
-  };
-
-  const listViewRef = useRef(null);
-
-  const getPriorityColor = (priority: Number) => {
-    if (priority === 0) {
-      return "#228B22";
-    } else if (priority === 1) {
-      return "#E3B23C";
-    } else {
-      return "#D22B2B";
-    };
-  }
-
-  const sortByPriority = () => {
-    const sortedList = [...list].sort((a, b) => b.priority - a.priority);
-    setList(sortedList);
-  };
-
-  const sortByTimestamp = () => {
-    const sortedList = [...list].sort((a, b) => {
-      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-    });
-    setList(sortedList);
-  };
+    }
+  });
 
   const onSortOptionSelect = (index: string) => {
+    console.log(index)
     if (index === "0") {
-      sortByPriority();
+      setDataList([...dataList].sort((a: any, b: any) => b.priority - a.priority));
     } else if (index === "1") {
-      sortByTimestamp();
+      setDataList([...dataList].sort((a: any, b: any) => {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      }));
     }
   };
 
+
   const onFilterOptionSelect = (index: string) => {
-    // const filteredList = []
     if (index === "0") {
-      setList(mockData.filter(item => !item.solved));
+      setDataList(abnormalData.filter((item: any) => !item.solved));
       return;
     } else {
-      setList(mockData.filter(item => item.priority === (parseInt(index) - 1) && !item.solved))
+      setDataList(abnormalData.filter((item: any) => item.priority === (parseInt(index) - 1) && !item.solved))
     }
-    // const filteredList = mockData.filter(item => item.priority === parseInt(index) && !item.solved);
-    // setList(filteredList);
+    console.log("onFilterOptionSelect selected");
   }
 
-  const sortOptions = [
-    { label: "Priority", value: "0" },
-    { label: "Datetime (New)", value: "1" },
-  ]
+  const deleteSpecificItem = (rowMap: RowMap, itemToDelete: any) => {
+    console.log(itemToDelete);
 
-  const filterOptions = [
-    { label: "All", value: "0" },
-    { label: "Caution", value: "1" },
-    { label: "Bad", value: "2" },
-    { label: "Very bad", value: "3" },
-  ]
+  };
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
   const [filter, setFilter] = useState("0");
   const [isFilterFocus, setIsFilterFocus] = useState(false);
 
   const [sort, setSort] = useState("");
   const [isSortFocus, setIsSortFocus] = useState(false);
+
+  const listViewRef = useRef(null);
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -208,7 +100,6 @@ export default function Landing() {
       </View>
       <View style={styles.statusContainer}>
         <View style={styles.dropdownBox}>
-          {/* <Text style={{ fontSize: 25, color: "white", marginStart: 10 }}>Notifications</Text> */}
           <Dropdown
             style={[styles.dropdown, isSortFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
@@ -253,26 +144,29 @@ export default function Landing() {
         <View style={styles.itemStyle}>
           <SwipeListView
             ref={listViewRef}
-            data={list}
-            renderItem={({ item }) => (
+            data={dataList}
+            renderItem={({ item }: any) => (
               <View style={styles.itemContainer}>
                 <View style={styles.itemContainerLeft}>
-                  <Text style={styles.item}>{item.areaCode}</Text>
+                  <Text style={styles.item}>{item.area_id}</Text>
                   <Text style={styles.item}>{item.timestamp}</Text>
                   <FontAwesome name="circle" size={25} color={getPriorityColor(item.priority)} />
                 </View>
                 <View style={styles.itemContainerRight}>
                   <Text style={styles.item}>Temperature: {item.temperature}</Text>
-                  <Text style={styles.item}>Air Flow: {item.airflow}</Text>
+                  <Text style={styles.item}>Air Flow: {item.air_flow}</Text>
                   <Text style={styles.item}>CO2: {item.co2}</Text>
                 </View>
               </View>
             )}
-            renderHiddenItem={({ item, index }, rowMap) => (
+            renderHiddenItem={({ item, index }: any, rowMap: RowMap) => (
               <View style={styles.hiddenItemContainer}>
                 <TouchableOpacity
                   style={styles.deleteButton}
-                  onPress={() => deleteSpecificItem(rowMap, item.id)}
+                  onPress={() => {
+                    deleteSpecificItem(rowMap, item.id)
+                  }
+                  }
                 >
                   <FontAwesome name="trash" size={25} color="white" />
                 </TouchableOpacity>
@@ -283,9 +177,10 @@ export default function Landing() {
           />
         </View>
       </View>
-    </View>
+    </View >
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
