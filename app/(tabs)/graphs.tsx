@@ -48,12 +48,15 @@ export default function LineChartTab() {
       value: item.areaCode
     })
   });
-  areaCodes[0].dates.forEach(item => {
-    dateData.push({
-      label: item,
-      value: item
-    })
-  });
+  if (areaCodes.length > 0 && areaCodes[0].dates) {
+    areaCodes[0].dates.forEach(item => {
+      dateData.push({
+        label: item,
+        value: item
+      })
+    });
+  }
+
 
   const { data: chartData, isLoading: isChartDataLoading } = useQuery(
     ["chartData", selectedLocation, selectedDate],
