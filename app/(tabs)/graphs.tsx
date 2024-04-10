@@ -1,335 +1,368 @@
 import React, { useState } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { useQuery } from "react-query";
 import { LineChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
-import data from "../../constants/data.json";
-import allData from "../../constants/allData.json";
-import { Reading } from "@/types/types";
+import {
+  Reading,
+  ChartDataset,
+  PickerComponentProps,
+  Location,
+} from "@/types/types";
+import { getDataByAreaCodeAndDate } from "@/api/data/dataApi";
+import { getAreaCode } from "@/api/areaCode/areaCodeApi";
 import { Dropdown } from 'react-native-element-dropdown';
 
+type TransformedDataType = {
+  label: string;
+  value: string;
+};
+
 export default function LineChartTab() {
-  const entireData = allData.flatMap((locationData) =>
-    Object.entries(locationData).flatMap(([location, readings]) =>
-      readings.map((reading: Reading) => ({
-        ...reading,
-        Location: location,
-      }))
-    )
-  );
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
 
-  const entireUniqueDates = [
-    ...new Set(entireData.map((item) => item.Timestamp.split(" ")[0])),
-  ];
-  const entireUniqueLocations = [
-    ...new Set(entireData.map((item) => item.Location)),
-  ];
-
-  const [entireSelectedDate, setEntireSelectedDate] = useState(
-    entireUniqueDates[0]
-  );
-  const [entireSelectedLocation, setEntireSelectedLocation] = useState(
-    entireUniqueLocations[0]
-  );
-
-  const entireFilteredData = entireData.filter(
-    (item) =>
-      item.Timestamp.split(" ")[0] === entireSelectedDate &&
-      item.Location === entireSelectedLocation
-  );
-
-  const entireHourlyData = entireFilteredData.filter((item) => {
-    const date = new Date(item.Timestamp);
-    return date.getMinutes() === 0 && date.getSeconds() === 0;
-  });
-
-  const entireLabels = entireHourlyData.map(
-    (item) => item.Timestamp.split(" ")[1]
-  );
-
-  const entireRT_AV_TL_Data = entireHourlyData.map((item) => {
-    const filteredKeys = Object.keys(item).filter((key) => key.includes("RT"));
-    const values = filteredKeys.map((key) => item[key]); // Assuming only one RT_AV_TL per reading
-    return values[0] || 0; // Default to 0 if not found
-  });
-
-  const entireCO2_TL_Data = entireHourlyData.map((item) => {
-    const filteredKeys = Object.keys(item).filter((key) => key.includes("CO2"));
-    const values = filteredKeys.map((key) => item[key]); // Assuming only one CO2_TL per reading
-    return values[0] || 0; // Default to 0 if not found
-  });
-
-  const entireFLW_AV_TL_Data = entireHourlyData.map((item) => {
-    const filteredKeys = Object.keys(item).filter((key) => key.includes("FLW"));
-    const values = filteredKeys.map((key) => item[key]); // Assuming only one CO2_TL per reading
-    return values[0] || 0; // Default to 0 if not found
-  });
-
-  const entireRT_AV_TL_datasets = [
+  const { data: areaCodesData, isLoading: isAreaCodesLoading } = useQuery(
+    "areaCodes",
+    getAreaCode,
     {
-      data: entireRT_AV_TL_Data,
-      color: () => "blue",
-      strokeWidth: 2,
-    },
-  ];
-
-  const entireCO2_TL_datasets = [
-    {
-      data: entireCO2_TL_Data,
-      color: () => "#fe8286",
-      strokeWidth: 2,
-    },
-  ];
-
-  const entireFLW_AV_TL_datasets = [
-    {
-      data: entireFLW_AV_TL_Data,
-      color: () => "#ffa5f0",
-      strokeWidth: 2,
-    },
-  ];
-
-  const isHour = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.getMinutes() === 0 && date.getSeconds() === 0;
-  };
-
-  const uniqueDates = [
-    ...new Set(data.map((item) => item.Timestamp.split(" ")[0])),
-  ];
-
-  const [selectedDate, setSelectedDate] = useState(uniqueDates[0]);
-
-  const filteredByDate = data.filter(
-    (item) => item.Timestamp.split(" ")[0] === selectedDate
+      onSuccess: (data) => {
+        if (data?.data.areaCodes.length > 0) {
+          const firstAreaCode = data.data.areaCodes[0];
+          setSelectedLocation(firstAreaCode.areaCode);
+          setSelectedDate(firstAreaCode.dates[0]);
+        }
+      },
+    }
   );
 
-  const renderDotRT_AV_TL_Content = ({ x, y, index }: { x: number, y: number, index: number }) => {
-    const yValue = entireRT_AV_TL_Data[index].toFixed(1);
+  const areaCodes = areaCodesData?.data.areaCodes || [];
+
+  //filter data
+  const areaData: TransformedDataType[] = [];
+  const dateData: TransformedDataType[] = [];
+  areaCodes.forEach(item => {
+    areaData.push({
+      label: item.areaCode,
+      value: item.areaCode
+    })
+  });
+  areaCodes[0].dates.forEach(item => {
+    dateData.push({
+      label: item,
+      value: item
+    })
+  });
+
+  const { data: chartData, isLoading: isChartDataLoading } = useQuery(
+    ["chartData", selectedLocation, selectedDate],
+    () => getDataByAreaCodeAndDate(selectedLocation, new Date(selectedDate)),
+    {
+      enabled: !!selectedLocation && !!selectedDate,
+    }
+  );
+
+  const isLoading = isAreaCodesLoading || isChartDataLoading;
+
+  let labels = [];
+  let temperatureDataset: ChartDataset[] = [];
+  let CO2Dataset: ChartDataset[] = [];
+  let airflowDataset: ChartDataset[] = [];
+  if (chartData?.success) {
+    const fetchedData = chartData.data.data;
+    labels = fetchedData.map((item: Reading) =>
+      (typeof item.timestamp === "string" ? item.timestamp : "")
+        .split("T")[1]
+        .substring(0, 5)
+    );
+    const temperatureData = fetchedData.map((item: Reading) => item.temperature);
+    const CO2Data = fetchedData.map((item: Reading) => item.co2);
+    const airflowData = fetchedData.map((item: Reading) => item.air_flow);
+    temperatureDataset = [
+      {
+        data: temperatureData,
+        color: () => "blue",
+        strokeWidth: 2,
+      },
+    ];
+    CO2Dataset = [
+      {
+        data: CO2Data,
+        color: () => "#fe8286",
+        strokeWidth: 2,
+      },
+    ];
+    airflowDataset = [
+      {
+        data: airflowData,
+        color: () => "#ffa5f0",
+        strokeWidth: 2,
+      },
+    ];
+  }
+
+  if (isLoading) {
     return (
-      <Text
-        key={index}
-        style={{ position: "absolute", paddingTop: y - 25, paddingLeft: x, color: "grey" }}
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
       >
-        {yValue}°C
-      </Text>
+        <ActivityIndicator size="large" color="#5d8bb0" />
+      </View>
     );
   }
 
-  const renderDotCO2_TL_Content = ({ x, y, index }: { x: number, y: number, index: number }) => {
-    const yValue = entireCO2_TL_Data[index].toFixed(1);
+  if (temperatureDataset.length === 0) {
     return (
-      <Text
-        key={index}
-        style={{ position: "absolute", paddingTop: y - 25, paddingLeft: x, color: "grey" }}
-      >
-        {yValue}
-      </Text>
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <Text>No data found for this location and date</Text>
+      </View>
     );
   }
-
-  const renderDotFLW_AV_TL_Content = ({ x, y, index }: { x: number, y: number, index: number }) => {
-    const yValue = entireFLW_AV_TL_Data[index].toFixed(1);
-    return (
-      <Text
-        key={index}
-        style={{ position: "absolute", paddingTop: y - 25, paddingLeft: x, color: "grey" }}
-      >
-        {yValue}
-      </Text>
-    );
-  }
-
-  const locationData: { label: string; value: string; search: string }[] = entireUniqueLocations.map((item) => ({
-    label: item,
-    value: item,
-    search: item,
-  }));
-
-  const dateData: { label: string; value: string; search: string }[] = entireUniqueDates.map((item) => ({
-    label: item,
-    value: item,
-    search: item,
-  }));
 
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#ffffff" }}>
-      <View style={{ width: "80%", backgroundColor: "#ffffff" }}>
+    <View style={{ alignItems: "center", justifyContent: "center" }}>
+      <View style={styles.dropdownStyles}>
         <Dropdown
-          data={locationData}
-          value={entireSelectedLocation}
+          data={areaData}
+          value={selectedLocation}
           onChange={(item) => {
-            setEntireSelectedLocation(item.value);
-          }} labelField={"label"} valueField={"value"} />
+            setSelectedLocation(item.value);
+          }}
+          labelField={"label"}
+          valueField={"value"}
+          style={styles.dropdownMenu}
+        />
         <Dropdown
           data={dateData}
-          value={entireSelectedDate}
+          value={selectedDate}
           onChange={(item) => {
-            setEntireSelectedDate(item.value);
-          }} labelField={"label"} valueField={"value"} />
+            setSelectedDate(item.value);
+          }}
+          labelField={"label"}
+          valueField={"value"}
+          style={styles.dropdownMenu}
+        />
       </View>
       <ScrollView>
         <Text style={styles.header}>Temperature</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ paddingHorizontal: 10 }}
-        >
-          <LineChart
-            data={{
-              labels: entireLabels,
-              datasets: entireRT_AV_TL_datasets.map((dataset) => ({
-                ...dataset,
-                data: dataset.data.map((value) => Number(value)),
-              })),
-            }}
-            width={2000}
-            height={300}
-            yAxisSuffix="°C"
-            yAxisInterval={2}
-            // format time on x-axis
-            formatXLabel={(value) => {
-              // Prepend a default date to the time string
-              const datetime = `2000-03-22T${value}`;
-              const date = new Date(datetime);
-              return `${date.getHours()}:${date
-                .getMinutes()
-                .toString()
-                .padStart(2, "0")}`;
-            }}
-            chartConfig={{
-              backgroundColor: "#fafafa",
-              backgroundGradientFrom: "#ffffff",
-              backgroundGradientTo: "#ffffff",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
-                borderRadius: 30,
-              },
-              propsForDots: {
-                r: "2",
-                strokeWidth: "4",
-                stroke: "#0288d1",
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 12,
-            }}
-            withShadow={false}
-            renderDotContent={renderDotRT_AV_TL_Content}
-          />
-        </ScrollView>
+        {
+          !isLoading && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ paddingHorizontal: 10 }}
+            >
+              <LineChart
+                data={{
+                  labels: labels,
+                  datasets: temperatureDataset,
+                }}
+                width={2000}
+                height={300}
+                yAxisSuffix="°C"
+                yAxisInterval={2}
+                // format time on x-axis
+                formatXLabel={(value) => {
+                  // Prepend a default date to the time string
+                  const datetime = `2000-03-22T${value}`;
+                  const date = new Date(datetime);
+                  return `${date.getHours()}:${date
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")}`;
+                }}
+                chartConfig={{
+                  backgroundColor: "#fafafa",
+                  backgroundGradientFrom: "#ffffff",
+                  backgroundGradientTo: "#ffffff",
+                  decimalPlaces: 2,
+                  color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 30,
+                  },
+                  propsForDots: {
+                    r: "2",
+                    strokeWidth: "4",
+                    stroke: "#0288d1",
+                  },
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 12,
+                }}
+                withShadow={false}
+              />
+            </ScrollView>
+          )
+        }
         <Text style={styles.header}>CO2</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ paddingHorizontal: 10 }}
-        >
-          <LineChart
-            data={{
-              labels: entireLabels,
-              datasets: entireCO2_TL_datasets.map((dataset) => ({
-                ...dataset,
-                data: dataset.data.map((value) => Number(value)),
-              })),
-            }}
-            width={2000}
-            height={300}
-            yAxisSuffix="ppm"
-            yAxisInterval={2}
-            // format time on x-axis
-            formatXLabel={(value) => {
-              // Prepend a default date to the time string
-              const datetime = `2000-03-22T${value}`;
-              const date = new Date(datetime);
-              return `${date.getHours()}:${date
-                .getMinutes()
-                .toString()
-                .padStart(2, "0")}`;
-            }}
-            chartConfig={{
-              backgroundColor: "#fafafa",
-              backgroundGradientFrom: "#ffffff",
-              backgroundGradientTo: "#ffffff",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
-                borderRadius: 30,
-              },
-              propsForDots: {
-                r: "2",
-                strokeWidth: "4",
-                stroke: "red",
-              },
-            }}
-            style={{
-              marginVertical: 8,
-              borderRadius: 12,
-            }}
-            withShadow={false}
-            renderDotContent={renderDotCO2_TL_Content}
-          />
-        </ScrollView>
+        {
+          !isLoading && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ paddingHorizontal: 10 }}
+            >
+              <LineChart
+                data={{
+                  labels: labels,
+                  datasets: CO2Dataset,
+                }}
+                width={2000}
+                height={300}
+                yAxisSuffix="ppm"
+                yAxisInterval={2}
+                // format time on x-axis
+                formatXLabel={(value) => {
+                  // Prepend a default date to the time string
+                  const datetime = `2000-03-22T${value}`;
+                  const date = new Date(datetime);
+                  return `${date.getHours()}:${date
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")}`;
+                }}
+                chartConfig={{
+                  backgroundColor: "#fafafa",
+                  backgroundGradientFrom: "#ffffff",
+                  backgroundGradientTo: "#ffffff",
+                  decimalPlaces: 2,
+                  color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 30,
+                  },
+                  propsForDots: {
+                    r: "2",
+                    strokeWidth: "4",
+                    stroke: "#0288d1",
+                  },
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 12,
+                }}
+                withShadow={false}
+              />
+            </ScrollView>
+          )
+        }
         <Text style={styles.header}>Air Flow</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ paddingHorizontal: 10 }}
-        >
-          <LineChart
-            data={{
-              labels: entireLabels,
-              datasets: entireFLW_AV_TL_datasets.map((dataset) => ({
-                ...dataset,
-                data: dataset.data.map((value) => Number(value)),
-              })),
-            }}
-            width={2000}
-            height={300}
-            yAxisSuffix="L/s"
-            yAxisInterval={2}
-            // format time on x-axis
-            formatXLabel={(value) => {
-              // Prepend a default date to the time string
-              const datetime = `2000-03-22T${value}`;
-              const date = new Date(datetime);
-              return `${date.getHours()}:${date
-                .getMinutes()
-                .toString()
-                .padStart(2, "0")}`;
-            }}
-            chartConfig={{
-              backgroundColor: "#fafafa",
-              backgroundGradientFrom: "#ffffff",
-              backgroundGradientTo: "#ffffff",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
-                borderRadius: 30,
-              },
-              propsForDots: {
-                r: "2",
-                strokeWidth: "4",
-                stroke: "#FF00FF",
-              },
-            }}
-            style={{
-              marginVertical: 8,
-              borderRadius: 12,
-            }}
-            withShadow={false}
-            renderDotContent={renderDotFLW_AV_TL_Content}
-          />
-        </ScrollView>
-        <Text>  </Text>
-        <Text>  </Text>
-        <Text>  </Text>
+        {
+          !isLoading && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ paddingHorizontal: 10 }}
+            >
+              <LineChart
+                data={{
+                  labels: labels,
+                  datasets: airflowDataset,
+                }}
+                width={2000}
+                height={300}
+                yAxisSuffix="L/s"
+                yAxisInterval={2}
+                // format time on x-axis
+                formatXLabel={(value) => {
+                  // Prepend a default date to the time string
+                  const datetime = `2000-03-22T${value}`;
+                  const date = new Date(datetime);
+                  return `${date.getHours()}:${date
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")}`;
+                }}
+                chartConfig={{
+                  backgroundColor: "#fafafa",
+                  backgroundGradientFrom: "#ffffff",
+                  backgroundGradientTo: "#ffffff",
+                  decimalPlaces: 2,
+                  color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  style: {
+                    borderRadius: 30,
+                  },
+                  propsForDots: {
+                    r: "2",
+                    strokeWidth: "4",
+                    stroke: "#0288d1",
+                  },
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 12,
+                }}
+                withShadow={false}
+              />
+            </ScrollView>
+          )
+        }
       </ScrollView>
+    </View >
+  );
+}
+
+function PickerComponent({
+  areaCodes,
+  selectedLocation,
+  setSelectedLocation,
+  selectedDate,
+  setSelectedDate,
+}: PickerComponentProps) {
+  // When a new location is selected, update the selected location and date accordingly
+  const onLocationChange = (itemValue: Location) => {
+    setSelectedLocation(itemValue as unknown as string);
+    const selectedArea = areaCodes.find(
+      (location: Location) => location.areaCode === itemValue.areaCode
+    );
+    if (selectedArea) {
+      const dates = selectedArea.dates || [];
+      setSelectedDate(dates.length > 0 ? dates[0] : "");
+    }
+  };
+
+  // Find the selected area code to list its dates
+  const selectedArea = areaCodes.find(
+    (location: Location) => location.areaCode === selectedLocation
+  ) || { dates: [] };
+
+  return (
+    <View
+      style={{ width: "60%", justifyContent: "center", alignSelf: "center" }}
+    >
+      <Picker
+        selectedValue={selectedLocation as unknown as Location}
+        onValueChange={onLocationChange}
+        itemStyle={{ fontSize: 18, height: 150 }}
+      >
+        {areaCodes.map((location: Location) => (
+          <Picker.Item
+            label={location.areaCode}
+            value={location.areaCode}
+            key={location.areaCode}
+          />
+        ))}
+      </Picker>
+      <Picker
+        selectedValue={selectedDate}
+        onValueChange={(itemValue: string) => setSelectedDate(itemValue)}
+        itemStyle={{ fontSize: 18, height: 150 }}
+      >
+        {selectedArea.dates.map((date: string) => (
+          <Picker.Item label={date} value={date} key={date} />
+        ))}
+      </Picker>
     </View>
   );
 }
@@ -344,6 +377,18 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     marginBottom: 10,
-    marginLeft: 10,
   },
+  dropdownStyles: {
+    flex: 1,
+    flexDirection: "row",
+    width: "90%",
+    backgroundColor: "#FFF",
+    marginTop: 40,
+    marginBottom: 40,
+  },
+  dropdownMenu: {
+    marginLeft: 10,
+    marginRight: 20,
+    width: 150
+  }
 });
