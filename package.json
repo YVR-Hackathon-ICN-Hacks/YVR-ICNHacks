@@ -44,6 +44,7 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-charts-wrapper": "^0.6.0",
     "react-native-dotenv": "^3.4.11",
+    "react-native-element-dropdown": "^2.10.4",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-gifted-charts": "^1.4.9",
     "react-native-google-places-autocomplete": "^2.5.6",
