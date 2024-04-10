@@ -5,6 +5,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -39,20 +40,22 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <StatusBar style="dark" />
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            title: "Back",
-          }}
-        />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="details" options={{ presentation: "modal" }} />
-        <Stack.Screen name="pages" options={{ presentation: "card" }} />
-      </Stack>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider value={DefaultTheme}>
+        <StatusBar style="dark" />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              title: "Back",
+            }}
+          />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="details" options={{ presentation: "modal" }} />
+          <Stack.Screen name="pages" options={{ presentation: "card" }} />
+        </Stack>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
