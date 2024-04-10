@@ -39,7 +39,7 @@ export function Text(props: TextProps) {
 
 export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = "#494949";
+  const backgroundColor = "#ffffff";
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }

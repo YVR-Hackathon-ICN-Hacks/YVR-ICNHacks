@@ -52,3 +52,19 @@ export type NavigationParamList = {
   context?: string;
   detail_id?: string;
 };
+
+export type ChartDataset = {
+  data: number[];
+  color: () => string;
+  strokeWidth: number;
+};
+
+export interface AreaCode {
+  areaCode: string;
+  dates: string[];
+}
+
+export interface Location {
+  areaCode: string;
+  dates: string[];
+}
