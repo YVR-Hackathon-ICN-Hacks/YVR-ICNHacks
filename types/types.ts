@@ -68,3 +68,19 @@ export interface Location {
   areaCode: string;
   dates: string[];
 }
+
+export interface DataByAreaCodeAndDate {
+  success: boolean;
+  data: {
+    data: Reading[];
+  };
+  message?: string;
+}
+
+export interface PickerComponentProps {
+  areaCodes: Location[];
+  selectedLocation: string;
+  setSelectedLocation: (location: string) => void;
+  selectedDate: string;
+  setSelectedDate: (date: string) => void;
+}
