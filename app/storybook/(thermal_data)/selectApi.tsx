@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import {
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+  Modal,
+  Button,
+  FlatList,
+} from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
-import { Reading } from "@/types/types";
+import { Reading, ChartDataset, AreaCode, Location } from "@/types/types";
 import { getDataByAreaCodeAndDate } from "@/api/data/dataApi";
 import { getAreaCode } from "@/api/areaCode/areaCodeApi";
-
-type ChartDataset = {
-  data: number[];
-  color: () => string;
-  strokeWidth: number;
-};
-
-interface AreaCode {
-  areaCode: string;
-  dates: string[];
-}
 
 export default function LineChartTab() {
   const [labels, setLabels] = useState<string[]>([]);
@@ -26,6 +22,8 @@ export default function LineChartTab() {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [uniqueDates, setUniqueDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [isLocationModalVisible, setLocationModalVisible] = useState(false);
+  const [isDateModalVisible, setDateModalVisible] = useState(false);
 
   useEffect(() => {
     // Function to fetch area codes
@@ -37,10 +35,8 @@ export default function LineChartTab() {
           // Store the full area code objects
           setLocationAreaCodes(response.data.areaCodes);
           // Set the first area code as the default selected location
-          if (response.data.areaCodes.length > 0) {
-            setSelectedLocation(response.data.areaCodes[0].areaCode);
-            setUniqueDates(response.data.areaCodes[0].dates);
-          }
+          setSelectedLocation(response.data.areaCodes[0].areaCode);
+          setUniqueDates(response.data.areaCodes[0].dates);
         } else {
           console.error("Error fetching data:", response.message);
         }
@@ -50,22 +46,21 @@ export default function LineChartTab() {
         setIsLoading(false);
       }
     };
+    fetchAreaCode();
+  }, []);
 
-    // Function to fetch data by area code and date
-    const fetchDataByAreaCodeAndDate = async () => {
-      if (locationAreaCodes && uniqueDates) {
-        setIsLoading(true);
-        const formattedDate = new Date(selectedDate);
-        try {
-          const response = await getDataByAreaCodeAndDate(
-            selectedLocation,
-            formattedDate
-          );
+  const fetchDataByAreaCodeAndDate = () => {
+    if (locationAreaCodes && uniqueDates) {
+      setIsLoading(true);
+      const formattedDate = new Date(selectedDate);
+
+      getDataByAreaCodeAndDate(selectedLocation, formattedDate)
+        .then((response) => {
           if (response.success) {
             const fetchedData = response.data.data;
             const timeLabels =
               fetchedData && Array.isArray(fetchedData)
-                ? fetchedData.map((item: Reading) =>
+                ? fetchedData.map((item) =>
                     typeof item.timestamp === "string"
                       ? item.timestamp.split("T")[1].substring(0, 5)
                       : ""
@@ -87,27 +82,31 @@ export default function LineChartTab() {
             setLabels(timeLabels);
             setDatasetNew(newDataset);
           }
-        } catch (error) {
+        })
+        .catch((error) => {
           console.error("❓Error fetching data:", error);
-        } finally {
+        })
+        .finally(() => {
           setIsLoading(false);
-        }
-      }
-    };
+        });
+    }
+  };
 
-    const timer = setTimeout(() => {
-      fetchAreaCode();
-    }, 5000);
+  const handleLocationSelect = (location: Location) => {
+    setSelectedLocation(location.areaCode);
+    setUniqueDates(location.dates);
+    setSelectedDate(location.dates[0]);
+    setLocationModalVisible(false);
+  };
 
-    const delayForAdditionalData = setTimeout(() => {
-      fetchDataByAreaCodeAndDate();
-    }, 300);
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date);
+    setDateModalVisible(false);
+  };
 
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(delayForAdditionalData);
-    };
-  }, [selectedLocation, selectedDate]);
+  const fetchData = () => {
+    fetchDataByAreaCodeAndDate();
+  };
 
   if (isLoading) {
     return (
@@ -124,60 +123,77 @@ export default function LineChartTab() {
     );
   }
 
-  if (datasetNew.length === 0) {
-    return (
-      <View style={{ alignItems: "center", justifyContent: "center" }}>
-        <Text>No data found for this location and date</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
       <View style={{ width: "80%" }}>
-        <Picker
-          selectedValue={selectedLocation}
-          onValueChange={(itemValue) => {
-            setSelectedLocation(itemValue);
-            const selectedArea = locationAreaCodes.find(
-              (location) => location.areaCode === itemValue
-            );
-            if (selectedArea && selectedArea.dates.length > 0) {
-              setUniqueDates(selectedArea.dates);
-              setSelectedDate(selectedArea.dates[0]);
-            } else {
-              setUniqueDates([]);
-              setSelectedDate("");
-            }
-          }}
-          itemStyle={{ fontSize: 18, height: 150 }}
+        <TouchableOpacity
+          onPress={() => setLocationModalVisible(true)}
+          style={styles.button}
         >
-          {locationAreaCodes.map((location) => (
-            <Picker.Item
-              label={location.areaCode}
-              value={location.areaCode}
-              key={location.areaCode}
+          <Text>{selectedLocation || "Select Location"}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setDateModalVisible(true)}
+          style={styles.button}
+        >
+          <Text>{selectedDate || "Select Date"}</Text>
+        </TouchableOpacity>
+
+        <Button title="Fetch Data" onPress={fetchData} />
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isLocationModalVisible}
+          onRequestClose={() => setLocationModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <FlatList
+              data={locationAreaCodes}
+              keyExtractor={(item) => item.areaCode}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => handleLocationSelect(item)}
+                  style={styles.modalItem}
+                >
+                  <Text>{item.areaCode}</Text>
+                </TouchableOpacity>
+              )}
             />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={selectedDate}
-          onValueChange={(itemValue) => setSelectedDate(itemValue)}
-          itemStyle={{ fontSize: 18, height: 150 }}
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isDateModalVisible}
+          onRequestClose={() => setDateModalVisible(false)}
         >
-          {uniqueDates.map((date) => (
-            <Picker.Item label={date} value={date} key={date} />
-          ))}
-        </Picker>
+          <View style={styles.modalView}>
+            <FlatList
+              data={uniqueDates}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => handleDateSelect(item)}
+                  style={styles.modalItem}
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </Modal>
       </View>
       <Text style={styles.header}>Temperature</Text>
-      {!isLoading && (
+      {datasetNew.length > 0 && (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ paddingHorizontal: 10 }}
         >
-          {/* <LineChart
+          <LineChart
             data={{
               labels: labels,
               datasets: datasetNew,
@@ -218,7 +234,7 @@ export default function LineChartTab() {
               borderRadius: 12,
             }}
             withShadow={false}
-          /> */}
+          />
         </ScrollView>
       )}
     </View>
@@ -235,5 +251,32 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#DDDDDD",
+    padding: 10,
+    marginVertical: 5,
+  },
+  modalView: {
+    top: 50,
+    width: "80%",
+    margin: 30,
+    backgroundColor: "#EAF4FD",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalItem: {
+    padding: 10,
+    marginVertical: 2,
   },
 });
