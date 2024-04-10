@@ -1,10 +1,13 @@
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SwipeRow } from "react-native-swipe-list-view";
-import { SetStateAction, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
+import { getAbnormalData } from "@/api/abnormalData/abnormalDataApi";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Dropdown } from 'react-native-element-dropdown';
+
+
 type RowMap = { [key: string]: SwipeRow<any> };
 
 // 0이 제일 좋은거 1이 두번째로 좋은거 2가 제일 나쁜거
@@ -43,7 +46,7 @@ const mockData = [
     id: 4,
     areaCode: "A5",
     priority: 0,
-    timestamp: "2021-09-01 12:00:00",
+    timestamp: "2021-08-24 06:00:00",
     temperature: 0,
     airflow: 2,
     co2: 1,
@@ -53,7 +56,7 @@ const mockData = [
     id: 5,
     areaCode: "A5",
     priority: 0,
-    timestamp: "2021-09-01 12:00:00",
+    timestamp: "2021-09-01 20:00:00",
     temperature: 0,
     airflow: 2,
     co2: 1,
@@ -63,7 +66,7 @@ const mockData = [
     id: 6,
     areaCode: "A5",
     priority: 0,
-    timestamp: "2021-09-01 12:00:00",
+    timestamp: "2021-09-01 14:00:00",
     temperature: 0,
     airflow: 2,
     co2: 1,
@@ -72,8 +75,8 @@ const mockData = [
   {
     id: 7,
     areaCode: "A5",
-    priority: 0,
-    timestamp: "2021-09-01 12:00:00",
+    priority: 2,
+    timestamp: "2021-09-03 12:00:00",
     temperature: 0,
     airflow: 2,
     co2: 1,
@@ -91,7 +94,24 @@ const mockData = [
   }
 ]
 
+// async function getData() {
+//   let data = await getAbnormalData();
+//   data = data.abnormalData;
+// }
+
+
 export default function Landing() {
+  let data = [];
+
+  async function getData() {
+    data = await getAbnormalData();
+    data = data.abnormalData;
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const [list, setList] = useState(mockData.filter(item => !item.solved));
 
   const deleteSpecificItem = (rowMap: RowMap, itemToDelete: number) => {
@@ -151,13 +171,35 @@ export default function Landing() {
     }
   };
 
+  const onFilterOptionSelect = (index: string) => {
+    // const filteredList = []
+    if (index === "0") {
+      setList(mockData.filter(item => !item.solved));
+      return;
+    } else {
+      setList(mockData.filter(item => item.priority === (parseInt(index) - 1) && !item.solved))
+    }
+    // const filteredList = mockData.filter(item => item.priority === parseInt(index) && !item.solved);
+    // setList(filteredList);
+  }
+
   const sortOptions = [
     { label: "Priority", value: "0" },
-    { label: "Timestamp", value: "1" },
+    { label: "Datetime (New)", value: "1" },
   ]
 
-  const [value, setValue] = useState("");
-  const [isFocus, setIsFocus] = useState(false);
+  const filterOptions = [
+    { label: "All", value: "0" },
+    { label: "Caution", value: "1" },
+    { label: "Bad", value: "2" },
+    { label: "Very bad", value: "3" },
+  ]
+
+  const [filter, setFilter] = useState("0");
+  const [isFilterFocus, setIsFilterFocus] = useState(false);
+
+  const [sort, setSort] = useState("");
+  const [isSortFocus, setIsSortFocus] = useState(false);
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -166,9 +208,9 @@ export default function Landing() {
       </View>
       <View style={styles.statusContainer}>
         <View style={styles.dropdownBox}>
-          <Text style={{ fontSize: 25, color: "white", marginStart: 10 }}>Notifications</Text>
+          {/* <Text style={{ fontSize: 25, color: "white", marginStart: 10 }}>Notifications</Text> */}
           <Dropdown
-            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            style={[styles.dropdown, isSortFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
@@ -177,19 +219,35 @@ export default function Landing() {
             maxHeight={300}
             labelField={"label"}
             valueField={"value"}
-            placeholder={!isFocus ? '  Sort By' : '...'}
-            searchPlaceholder="Search..."
-            value={value}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
+            placeholder={!isSortFocus ? '  Sort By' : '...'}
+            value={sort}
+            onFocus={() => setIsSortFocus(true)}
+            onBlur={() => setIsSortFocus(false)}
             onChange={(item) => {
-              setValue(item.value);
-              setIsFocus(false);
+              setSort(item.value);
+              setIsSortFocus(false);
               onSortOptionSelect(item.value);
             }}
-            renderLeftIcon={() => (
-              <FontAwesome name="angle-down" size={20} color="#000" />
-            )}
+          />
+          <Dropdown
+            style={[styles.dropdown, isFilterFocus && { borderColor: 'blue' }]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={filterOptions}
+            maxHeight={300}
+            labelField={"label"}
+            valueField={"value"}
+            placeholder={!isFilterFocus ? '  Filter By' : '...'}
+            value={filter}
+            onFocus={() => setIsFilterFocus(true)}
+            onBlur={() => setIsFilterFocus(false)}
+            onChange={(item) => {
+              setFilter(item.value);
+              setIsFilterFocus(false);
+              onFilterOptionSelect(item.value);
+            }}
           />
         </View>
         <View style={styles.itemStyle}>
