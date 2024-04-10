@@ -4,7 +4,7 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { SwipeRow } from "react-native-swipe-list-view";
 import { SetStateAction, useRef, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {Dropdown} from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';
 type RowMap = { [key: string]: SwipeRow<any> };
 
 // 0이 제일 좋은거 1이 두번째로 좋은거 2가 제일 나쁜거
@@ -15,7 +15,7 @@ const mockData = [
     priority: 2,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   },
@@ -25,7 +25,7 @@ const mockData = [
     priority: 1,
     timestamp: "2021-09-01 16:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   },
@@ -35,7 +35,7 @@ const mockData = [
     priority: 0,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: true,
   },
@@ -45,7 +45,7 @@ const mockData = [
     priority: 0,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   },
@@ -55,7 +55,7 @@ const mockData = [
     priority: 0,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   },
@@ -65,7 +65,7 @@ const mockData = [
     priority: 0,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   },
@@ -75,7 +75,7 @@ const mockData = [
     priority: 0,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   },
@@ -85,7 +85,7 @@ const mockData = [
     priority: 0,
     timestamp: "2021-09-01 12:00:00",
     temperature: 0,
-    airflow:2,
+    airflow: 2,
     co2: 1,
     solved: false,
   }
@@ -95,16 +95,16 @@ export default function Landing() {
   const [list, setList] = useState(mockData.filter(item => !item.solved));
 
   const deleteSpecificItem = (rowMap: RowMap, itemToDelete: number) => {
-    
+
     if (rowMap[itemToDelete]) {
       rowMap[itemToDelete].closeRow();
     }
-  
+
     setList((currentList) => {
-      const newList = []; 
+      const newList = [];
       for (let item of currentList) {
         if (item.id === itemToDelete) {
-      
+
           const updatedItem = { ...item, solved: true }; // 현재 list에 있는 item을 수정
           mockData[item.id - 1] = updatedItem; // mockdata 수정
 
@@ -115,7 +115,7 @@ export default function Landing() {
           newList.push(item);
         }
       }
-      return newList; 
+      return newList;
     });
   };
 
@@ -144,7 +144,6 @@ export default function Landing() {
   };
 
   const onSortOptionSelect = (index: string) => {
-    console.log(index);
     if (index === "0") {
       sortByPriority();
     } else if (index === "1") {
@@ -167,7 +166,7 @@ export default function Landing() {
       </View>
       <View style={styles.statusContainer}>
         <View style={styles.dropdownBox}>
-          <Text style={{fontSize: 25, color: "white", marginStart: 10}}>Notifications</Text>
+          <Text style={{ fontSize: 25, color: "white", marginStart: 10 }}>Notifications</Text>
           <Dropdown
             style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
@@ -176,8 +175,8 @@ export default function Landing() {
             iconStyle={styles.iconStyle}
             data={sortOptions}
             maxHeight={300}
-            labelField= {"label"}
-            valueField= {"value"}
+            labelField={"label"}
+            valueField={"value"}
             placeholder={!isFocus ? '  Sort By' : '...'}
             searchPlaceholder="Search..."
             value={value}
@@ -194,38 +193,36 @@ export default function Landing() {
           />
         </View>
         <View style={styles.itemStyle}>
-          <ScrollView>
           <SwipeListView
-              ref={listViewRef}
-              data={list}
-              renderItem={({ item }) => (
-                <View style={styles.itemContainer}>
-                  <View style={styles.itemContainerLeft}>
-                    <Text style={styles.item}>{item.areaCode}</Text>
-                    <Text style={styles.item}>{item.timestamp}</Text>
-                    <FontAwesome name="circle" size={25} color={getPriorityColor(item.priority)} />
-                  </View>
-                  <View style={styles.itemContainerRight}>
-                    <Text style={styles.item}>Temperature: {item.temperature}</Text>
-                    <Text style={styles.item}>Air Flow: {item.airflow}</Text>
-                    <Text style={styles.item}>CO2: {item.co2}</Text>
-                  </View>
+            ref={listViewRef}
+            data={list}
+            renderItem={({ item }) => (
+              <View style={styles.itemContainer}>
+                <View style={styles.itemContainerLeft}>
+                  <Text style={styles.item}>{item.areaCode}</Text>
+                  <Text style={styles.item}>{item.timestamp}</Text>
+                  <FontAwesome name="circle" size={25} color={getPriorityColor(item.priority)} />
                 </View>
-              )}
-              renderHiddenItem={({ item, index }, rowMap) => (
-                <View style={styles.hiddenItemContainer}>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => deleteSpecificItem(rowMap, item.id)}
-                  >
-                    <FontAwesome name="trash" size={25} color="white" />
-                  </TouchableOpacity>
+                <View style={styles.itemContainerRight}>
+                  <Text style={styles.item}>Temperature: {item.temperature}</Text>
+                  <Text style={styles.item}>Air Flow: {item.airflow}</Text>
+                  <Text style={styles.item}>CO2: {item.co2}</Text>
                 </View>
-              )}
-              leftOpenValue={0}
-              rightOpenValue={-100}
-            />
-          </ScrollView>
+              </View>
+            )}
+            renderHiddenItem={({ item, index }, rowMap) => (
+              <View style={styles.hiddenItemContainer}>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => deleteSpecificItem(rowMap, item.id)}
+                >
+                  <FontAwesome name="trash" size={25} color="white" />
+                </TouchableOpacity>
+              </View>
+            )}
+            leftOpenValue={0}
+            rightOpenValue={-100}
+          />
         </View>
       </View>
     </View>
@@ -291,14 +288,14 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "100%",
     alignItems: "center",
-    flex:1,
+    flex: 1,
     flexDirection: "row",
   },
   itemContainerLeft: {
     backgroundColor: "white",
     width: "60%",
     paddingLeft: 5,
-    flex:1,
+    flex: 1,
     alignItems: "flex-start"
   },
   itemContainerRight: {
