@@ -12,11 +12,11 @@ export default function Landing() {
       <View style={styles.statusContainer}>
         <View style={styles.itemStyle}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Daily Reports</Text>
+            <Text style={styles.headerText}>Notifications</Text>
           </View>
         </View>
       </View>
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <View style={styles.buttonRow}>
           <ButtonComponent
             value="Thermal Data"
@@ -41,7 +41,7 @@ export default function Landing() {
             information="inside Sunlight exposure"
           ></ButtonComponent>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0)",
+    marginBottom: 20,
   },
   itemStyle: {
     flex: 1,
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
   header: {
     flexDirection: "row",
