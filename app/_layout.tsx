@@ -45,7 +45,7 @@ function RootLayoutNav() {
   return (
     <QueryClientProvider client={new QueryClient()}>
       <ThemeProvider value={DefaultTheme}>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <Stack>
           <Stack.Screen
             name="(tabs)"
@@ -54,9 +54,33 @@ function RootLayoutNav() {
               title: "Back",
             }}
           />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          <Stack.Screen name="details" options={{ presentation: "modal" }} />
-          <Stack.Screen name="pages" options={{ presentation: "card" }} />
+          <Stack.Screen
+            name="modal"
+            options={{
+              presentation: "modal",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="details"
+            options={{
+              presentation: "modal",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="pages"
+            options={{
+              presentation: "card",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </QueryClientProvider>

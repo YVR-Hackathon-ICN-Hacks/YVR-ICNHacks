@@ -6,7 +6,7 @@ import { Text, View } from "@/components/Themed";
 import data from "../../constants/data.json";
 import allData from "../../constants/allData.json";
 import { Reading } from "@/types/types";
-import { Dropdown } from 'react-native-element-dropdown';
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function LineChartTab() {
   const entireData = allData.flatMap((locationData) =>
@@ -104,69 +104,125 @@ export default function LineChartTab() {
     (item) => item.Timestamp.split(" ")[0] === selectedDate
   );
 
-  const renderDotRT_AV_TL_Content = ({ x, y, index }: { x: number, y: number, index: number }) => {
+  const renderDotRT_AV_TL_Content = ({
+    x,
+    y,
+    index,
+  }: {
+    x: number;
+    y: number;
+    index: number;
+  }) => {
     const yValue = entireRT_AV_TL_Data[index].toFixed(1);
     return (
       <Text
         key={index}
-        style={{ position: "absolute", paddingTop: y - 25, paddingLeft: x, color: "grey" }}
+        style={{
+          position: "absolute",
+          paddingTop: y - 25,
+          paddingLeft: x,
+          color: "grey",
+        }}
       >
         {yValue}°C
       </Text>
     );
-  }
+  };
 
-  const renderDotCO2_TL_Content = ({ x, y, index }: { x: number, y: number, index: number }) => {
+  const renderDotCO2_TL_Content = ({
+    x,
+    y,
+    index,
+  }: {
+    x: number;
+    y: number;
+    index: number;
+  }) => {
     const yValue = entireCO2_TL_Data[index].toFixed(1);
     return (
       <Text
         key={index}
-        style={{ position: "absolute", paddingTop: y - 25, paddingLeft: x, color: "grey" }}
+        style={{
+          position: "absolute",
+          paddingTop: y - 25,
+          paddingLeft: x,
+          color: "grey",
+        }}
       >
         {yValue}
       </Text>
     );
-  }
+  };
 
-  const renderDotFLW_AV_TL_Content = ({ x, y, index }: { x: number, y: number, index: number }) => {
+  const renderDotFLW_AV_TL_Content = ({
+    x,
+    y,
+    index,
+  }: {
+    x: number;
+    y: number;
+    index: number;
+  }) => {
     const yValue = entireFLW_AV_TL_Data[index].toFixed(1);
     return (
       <Text
         key={index}
-        style={{ position: "absolute", paddingTop: y - 25, paddingLeft: x, color: "grey" }}
+        style={{
+          position: "absolute",
+          paddingTop: y - 25,
+          paddingLeft: x,
+          color: "grey",
+        }}
       >
         {yValue}
       </Text>
     );
-  }
+  };
 
-  const locationData: { label: string; value: string; search: string }[] = entireUniqueLocations.map((item) => ({
-    label: item,
-    value: item,
-    search: item,
-  }));
+  const locationData: { label: string; value: string; search: string }[] =
+    entireUniqueLocations.map((item) => ({
+      label: item,
+      value: item,
+      search: item,
+    }));
 
-  const dateData: { label: string; value: string; search: string }[] = entireUniqueDates.map((item) => ({
-    label: item,
-    value: item,
-    search: item,
-  }));
+  const dateData: { label: string; value: string; search: string }[] =
+    entireUniqueDates.map((item) => ({
+      label: item,
+      value: item,
+      search: item,
+    }));
 
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "#ffffff" }}>
-      <View style={{ width: "80%", backgroundColor: "#ffffff" }}>
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#c6d8e7",
+        paddingBottom: 50,
+      }}
+    >
+      <View
+        style={{ width: "80%", backgroundColor: "#c6d8e7", paddingBottom: 10 }}
+      >
         <Dropdown
           data={locationData}
           value={entireSelectedLocation}
           onChange={(item) => {
             setEntireSelectedLocation(item.value);
-          }} labelField={"label"} valueField={"value"} />
+          }}
+          labelField={"label"}
+          valueField={"value"}
+        />
         <Dropdown
           data={dateData}
           value={entireSelectedDate}
           onChange={(item) => {
             setEntireSelectedDate(item.value);
-          }} labelField={"label"} valueField={"value"} />
+          }}
+          labelField={"label"}
+          valueField={"value"}
+        />
       </View>
       <ScrollView>
         <Text style={styles.header}>Temperature</Text>
@@ -326,9 +382,6 @@ export default function LineChartTab() {
             renderDotContent={renderDotFLW_AV_TL_Content}
           />
         </ScrollView>
-        <Text>  </Text>
-        <Text>  </Text>
-        <Text>  </Text>
       </ScrollView>
     </View>
   );
@@ -345,5 +398,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     marginLeft: 10,
+    color: "black",
   },
 });
