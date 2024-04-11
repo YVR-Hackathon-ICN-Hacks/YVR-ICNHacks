@@ -1,65 +1,83 @@
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Button, Modal, ScrollView, StyleSheet, TouchableHighlight, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SwipeRow } from "react-native-swipe-list-view";
 import { useRef, useState } from "react";
-import { getAbnormalData } from "@/api/abnormalData/abnormalDataApi";
+import { getAbnormalData, updateAbnormalData } from "@/api/abnormalData/abnormalDataApi";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
 import { useQuery } from "react-query";
 import { Dropdown } from 'react-native-element-dropdown';
 
-
-// const queryClient = new QueryClient();
 type RowMap = { [key: string]: SwipeRow<any> };
 
-// 0이 제일 좋은거 1이 두번째로 좋은거 2가 제일 나쁜거
+const formatTimestamp = (timestamp: any) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
 
-const getPriorityColor = (priority: Number) => {
-  if (priority === 0) {
-    return "#228B22";
-  } else if (priority === 1) {
-    return "#E3B23C";
-  } else {
-    return "#D22B2B";
-  };
-}
-
-
-const sortOptions = [
-  { label: "Priority", value: "0" },
-  { label: "Datetime (New)", value: "1" },
-]
-
-const filterOptions = [
-  { label: "All", value: "0" },
-  { label: "Caution", value: "1" },
-  { label: "Bad", value: "2" },
-  { label: "Very bad", value: "3" },
-]
+// priority level: 0 -> 1 -> 2 (2가 제일 안좋음)
 
 export default function Landing() {
+
+  const getPriorityColor = (priority: Number) => {
+    if (priority === 0) {
+      return "#228B22";
+    } else if (priority === 1) {
+      return "#E3B23C";
+    } else {
+      return "#D22B2B";
+    };
+  }
+
+  const sortOptions = [
+    { label: "Priority", value: "0" },
+    { label: "Datetime (Old)", value: "1" },
+    { label: "Datetime (New)", value: "2" }
+  ]
+
+  const filterOptions = [
+    { label: "All", value: "0" },
+    { label: "Caution", value: "1" },
+    { label: "Bad", value: "2" },
+    { label: "Very bad", value: "3" }
+  ]
   const [isLoading, setIsLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [abnormalData, setAbnormalData] = useState([]);
+  const [unsolvedIssuedataList, setunsolvedIssueDataList] = useState([]);
+  const [entireabnormalData, setEntireAbnormalData] = useState([]);
+
   const { data: data, isLoading: isAbnormalDataLoading } = useQuery('abnormalData', getAbnormalData, {
     onSuccess: (data) => {
       if (data.abnormalData.data.length > 0) {
         setIsLoading(true);
         const abnormalDataList = data?.abnormalData.data || [];
-        setDataList(abnormalDataList.filter((item: { solved: any; }) => !item.solved));
-        setAbnormalData(abnormalDataList.filter((item: { solved: any; }) => !item.solved));
+
+        const formattedAbnormalDataList = abnormalDataList.map((item: any) => ({
+          ...item,
+          timestamp: formatTimestamp(item.timestamp)
+        }));
+
+        setunsolvedIssueDataList(formattedAbnormalDataList.filter((item: { solved: any; }) => !item.solved));
+        setEntireAbnormalData(formattedAbnormalDataList);
         setIsLoading(false);
       }
     }
   });
 
   const onSortOptionSelect = (index: string) => {
-    console.log(index)
     if (index === "0") {
-      setDataList([...dataList].sort((a: any, b: any) => b.priority - a.priority));
+      setunsolvedIssueDataList([...unsolvedIssuedataList].sort((a: any, b: any) => b.priority - a.priority));
     } else if (index === "1") {
-      setDataList([...dataList].sort((a: any, b: any) => {
+      setunsolvedIssueDataList([...unsolvedIssuedataList].sort((a: any, b: any) => {
+        return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+      }));
+    } else {
+      setunsolvedIssueDataList([...unsolvedIssuedataList].sort((a: any, b: any) => {
         return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
       }));
     }
@@ -68,18 +86,56 @@ export default function Landing() {
 
   const onFilterOptionSelect = (index: string) => {
     if (index === "0") {
-      setDataList(abnormalData.filter((item: any) => !item.solved));
+      setunsolvedIssueDataList(entireabnormalData.filter((item: any) => !item.solved));
       return;
     } else {
-      setDataList(abnormalData.filter((item: any) => item.priority === (parseInt(index) - 1) && !item.solved))
+      setunsolvedIssueDataList(entireabnormalData.filter((item: any) => item.priority === (parseInt(index) - 1) && !item.solved))
     }
-    console.log("onFilterOptionSelect selected");
   }
 
   const deleteSpecificItem = (rowMap: RowMap, itemToDelete: any) => {
-    console.log(itemToDelete);
-
+    const updatedDataList = unsolvedIssuedataList.filter((item: any) => item.id !== itemToDelete);
+    setunsolvedIssueDataList(updatedDataList);
+    updateAbnormalData(itemToDelete);
   };
+
+  const handleViewSolved = () => {
+    const solvedIssueDataList = entireabnormalData.filter((item: any) => item.solved);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const modalContent = (
+    <ScrollView>
+      <View style={[styles.container, { backgroundColor: "white" }]}>
+        <View style={styles.textContainer}>
+          <Text style={{ fontSize: 20, paddingTop: 20 }}>Solved Abnormal Data</Text>
+        </View>
+        <View style={styles.statusContainer}>
+          <View style={[styles.itemStyle, { backgroundColor: "white", marginTop: 20 }]}>
+            {entireabnormalData.filter((item: any) => item.solved).map((item: any) => (
+              <View key={item.id} style={[styles.itemContainer, { backgroundColor: "#b6d6e8" }, styles.shadow]}>
+                <View style={[styles.itemContainerLeft, { backgroundColor: "#b6d6e8" }]}>
+                  <Text style={styles.item}>{item.area_id}</Text>
+                  <Text style={styles.item}>{item.timestamp}</Text>
+                  <FontAwesome name="circle" size={25} color={getPriorityColor(item.priority)} />
+                </View>
+                <View style={[styles.itemContainerRight, { backgroundColor: "#b6d6e8" }]}>
+                  <Text style={styles.item}>Temperature: {item.temperature}</Text>
+                  <Text style={styles.item}>Air Flow: {item.air_flow}</Text>
+                  <Text style={styles.item}>CO2: {item.co2}</Text>
+                </View>
+              </View>
+            ))
+            }
+          </View>
+        </View>
+      </View>
+    </ScrollView >
+  );
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -90,6 +146,8 @@ export default function Landing() {
 
   const [sort, setSort] = useState("");
   const [isSortFocus, setIsSortFocus] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   const listViewRef = useRef(null);
   return (
@@ -104,8 +162,6 @@ export default function Landing() {
             style={[styles.dropdown, isSortFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
             data={sortOptions}
             maxHeight={300}
             labelField={"label"}
@@ -120,12 +176,11 @@ export default function Landing() {
               onSortOptionSelect(item.value);
             }}
           />
+          <Button title="View Solved" onPress={handleViewSolved} />
           <Dropdown
             style={[styles.dropdown, isFilterFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
             data={filterOptions}
             maxHeight={300}
             labelField={"label"}
@@ -142,11 +197,15 @@ export default function Landing() {
           />
         </View>
         <View style={styles.itemStyle}>
+          <Modal visible={showModal} onRequestClose={handleCloseModal}>
+            {modalContent}
+            <Button title="Close" onPress={handleCloseModal} />
+          </Modal>
           <SwipeListView
             ref={listViewRef}
-            data={dataList}
+            data={unsolvedIssuedataList}
             renderItem={({ item }: any) => (
-              <View style={styles.itemContainer}>
+              <View style={[styles.itemContainer, styles.shadow]}>
                 <View style={styles.itemContainerLeft}>
                   <Text style={styles.item}>{item.area_id}</Text>
                   <Text style={styles.item}>{item.timestamp}</Text>
@@ -205,6 +264,19 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0)",
     marginBottom: 20
   },
+  modalContainer: {
+    backgroundColor: "green",
+    flex: 1,
+    marginTop: 50,
+    width: "90%",
+    alignItems: "center",
+  },
+  modalOuterContainer: {
+    flex: 1,
+    backgroundColor: "#8cb0ce",
+    width: "100%",
+    justifyContent: "center",
+  },
   itemStyle: {
     flex: 1,
     width: "90%",
@@ -247,14 +319,16 @@ const styles = StyleSheet.create({
   itemContainerLeft: {
     backgroundColor: "white",
     width: "60%",
+    height: "100%",
     paddingLeft: 5,
     flex: 1,
     alignItems: "flex-start"
   },
   itemContainerRight: {
     backgroundColor: "white",
+    height: "100%",
     width: "40%",
-    alignItems: "flex-end"
+    alignItems: "flex-end",
   },
   item: {
     fontSize: 15,
@@ -270,32 +344,32 @@ const styles = StyleSheet.create({
     height: 50,
   },
   dropdown: {
-    height: 50,
-    width: 150,
+    height: 40,
+    width: 100,
     backgroundColor: 'white',
     marginTop: 15,
     marginBottom: 15,
     borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  icon: {
-    marginRight: 5,
+    paddingLeft: 8,
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 14,
     backgroundColor: 'white',
   },
   selectedTextStyle: {
+    fontSize: 14,
+  },
+  modalitem: {
     fontSize: 16,
+    marginBottom: 5,
   },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
+  shadow: {
+    elevation: 7,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  }
 });
