@@ -4,6 +4,7 @@ import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { StatusBar } from "expo-status-bar";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -14,7 +15,8 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   return (
-    <>
+    <QueryClientProvider client={new QueryClient()}>
+      <>
       <StatusBar style="dark" />
       <Tabs
         screenOptions={{
@@ -85,5 +87,6 @@ export default function TabLayout() {
         />
       </Tabs>
     </>
+    </QueryClientProvider>
   );
 }
