@@ -80,9 +80,9 @@ function RootLayoutNav({ userAuth }: { userAuth: string | null }) {
   return (
     <ThemeProvider value={DefaultTheme}>
       <StatusBar style="dark" />
-      {userAuth === null ? (
+      {/* {userAuth === null ? (
         <Login />
-      ) : (
+      ) : ( */}
         <Stack screenOptions={{ headerShown: true }}>
           <Stack.Screen
             name="(auth)"
@@ -94,7 +94,7 @@ function RootLayoutNav({ userAuth }: { userAuth: string | null }) {
             }}
           />
         </Stack>
-      )}
+      {/* )} */}
     </ThemeProvider>
   );
 }

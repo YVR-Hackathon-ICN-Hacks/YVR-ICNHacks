@@ -1,4 +1,4 @@
-import { ActivityIndicator, Button, Modal, ScrollView, StyleSheet, TouchableHighlight, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Button, Modal, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SwipeRow } from "react-native-swipe-list-view";
@@ -8,6 +8,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
 import { useQuery } from "react-query";
 import { Dropdown } from 'react-native-element-dropdown';
+import { TextSize } from "victory";
 
 type RowMap = { [key: string]: SwipeRow<any> };
 
@@ -37,7 +38,7 @@ export default function Landing() {
 
   const sortOptions = [
     { label: "Priority", value: "0" },
-    { label: "Datetime (Old)", value: "1" },
+    { label: "Datetime (Old)", value: "1"},
     { label: "Datetime (New)", value: "2" }
   ]
 
@@ -68,7 +69,6 @@ export default function Landing() {
         setSolvedIssueDataList(formattedAbnormalDataList.filter((item: { solved: any; }) => item.solved));
         setEntireAbnormalData(formattedAbnormalDataList);
         setIsLoading(false);
-        console.log(entireabnormalData);
       }
     }
   });
@@ -118,6 +118,7 @@ export default function Landing() {
       <View style={[styles.container, { backgroundColor: "white" }]}>
         <View style={styles.textContainer}>
           <Text style={{ fontSize: 20, paddingTop: 20 }}>Solved Abnormal Data</Text>
+          <View style={styles.separator} />
         </View>
         <View style={styles.statusContainer}>
           <View style={[styles.itemStyle, { backgroundColor: "white", marginTop: 20 }]}>
@@ -222,8 +223,19 @@ export default function Landing() {
               setIsSortFocus(false);
               onSortOptionSelect(item.value);
             }}
+            renderItem={( item ) => (
+              <View style={styles.dropdownItemContainer}>
+                <Text style={styles.dropdownItem}>
+                  {item.label}
+                </Text>
+              </View>
+            )}
           />
-          <Button title="View Solved" onPress={handleViewSolved} />
+          <TouchableOpacity
+            style={styles.viewSolvedButton}
+            onPress={handleViewSolved} >
+            <Text style={{color: "#fff", fontWeight: "bold"}}>View Solved</Text>
+          </TouchableOpacity>
           <Dropdown
             style={[styles.dropdown, isFilterFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
@@ -241,12 +253,23 @@ export default function Landing() {
               setIsFilterFocus(false);
               onFilterOptionSelect(item.value);
             }}
+            renderItem={( item ) => (
+              <View style={styles.dropdownItemContainer}>
+                <Text style={styles.dropdownItem}>
+                  {item.label}
+                </Text>
+              </View>
+            )}
           />
         </View>
         <View style={styles.itemStyle}>
           <Modal visible={showModal} onRequestClose={handleCloseModal}>
             {modalContent}
-            <Button title="Close" onPress={handleCloseModal} />
+            <TouchableOpacity
+              style={{backgroundColor: "#de392a", height: 40, justifyContent: 'center', alignItems: 'center'}}
+              onPress={handleCloseModal} >
+              <Text style={{color: "#fff", fontWeight: "bold"}}>CLOSE</Text>
+            </TouchableOpacity>
           </Modal>
           <SwipeListView
             ref={listViewRef}
@@ -385,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#8cb0ce",
   },
   deleteButton: {
-    backgroundColor: "#4CBB17",
+    backgroundColor: "#009E60",
     justifyContent: "center",
     alignItems: "center",
     width: 70,
@@ -448,7 +471,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: 12,
   },
   modalitem: {
     fontSize: 16,
@@ -460,5 +483,28 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-  }
+  },
+  dropdownItemContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  dropdownItem: {
+    fontSize: 11,
+  },
+  viewSolvedButton: {
+    backgroundColor: '#009E60',
+    width: 100,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 7,
+  },
+  separator: {
+    marginTop: 30,
+    borderColor: "black",
+    borderWidth: 1,
+    width: "90%",
+    color: "black",
+  },
 });
