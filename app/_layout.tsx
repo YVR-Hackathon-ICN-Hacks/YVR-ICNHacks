@@ -3,6 +3,7 @@ import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -14,6 +15,8 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
+
+SystemUI.setBackgroundColorAsync("transparent");
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
