@@ -61,10 +61,10 @@ export default function LineChartTab() {
             const timeLabels =
               fetchedData && Array.isArray(fetchedData)
                 ? fetchedData.map((item) =>
-                    typeof item.timestamp === "string"
-                      ? item.timestamp.split("T")[1].substring(0, 5)
-                      : ""
-                  )
+                  typeof item.timestamp === "string"
+                    ? item.timestamp.split("T")[1].substring(0, 5)
+                    : ""
+                )
                 : [];
 
             const tempData = fetchedData.map(
