@@ -3,8 +3,10 @@ import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -13,6 +15,8 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
+
+SystemUI.setBackgroundColorAsync("transparent");
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -39,20 +43,46 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <StatusBar style="dark" />
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            title: "Back",
-          }}
-        />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="details" options={{ presentation: "modal" }} />
-        <Stack.Screen name="pages" options={{ presentation: "card" }} />
-      </Stack>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider value={DefaultTheme}>
+        <StatusBar style="light" />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              title: "Back",
+            }}
+          />
+          <Stack.Screen
+            name="modal"
+            options={{
+              presentation: "modal",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="details"
+            options={{
+              presentation: "modal",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="pages"
+            options={{
+              presentation: "card",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+        </Stack>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

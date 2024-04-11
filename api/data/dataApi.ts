@@ -1,16 +1,15 @@
-
-
-const API_URL = 'https://yvr-icn-hacks-server.vercel.app/api';
-
-export async function getDataByAreaCode(route: string , areaCode: string): Promise<any> {
+export async function getDataByAreaCode(
+  route: string,
+  areaCode: string
+): Promise<any> {
+  const API_URL = "https://yvr-icn-hacks-server.vercel.app/api";
   try {
-    const response = await fetch(`${API_URL}/${route}/${areaCode}` , {
+    const response = await fetch(`${API_URL}/data/${areaCode}`, {
       method: "GET",
-    });    
-    const data = await response.json();        
+    });
+    const data = await response.json();
     return { success: true, message: "Successfully got data !", data };
   } catch (error: any) {
-    
     return {
       success: false,
       message: "Error fetching data - " + error.message,
@@ -18,15 +17,19 @@ export async function getDataByAreaCode(route: string , areaCode: string): Promi
   }
 }
 
-export async function getDataByAreaCodeAndDate(route: string , areaCode: string, date: Date): Promise<any> {
+export async function getDataByAreaCodeAndDate(
+  // route: string,
+  areaCode: string,
+  date: Date
+): Promise<any> {
+  const API_URL = "https://yvr-icn-hacks-server.vercel.app/api";
   try {
-    const response = await fetch(`${API_URL}/${route}/${areaCode}/${date}` , {
+    const response = await fetch(`${API_URL}/data/${areaCode}/${date}`, {
       method: "GET",
-    });    
-    const data = await response.json();        
+    });
+    const data = await response.json();
     return { success: true, message: "Successfully got data !", data };
   } catch (error: any) {
-    
     return {
       success: false,
       message: "Error fetching data - " + error.message,
