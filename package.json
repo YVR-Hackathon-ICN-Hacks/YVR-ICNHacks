@@ -58,6 +58,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
+    "react-query": "^3.39.3",
     "victory": "^37.0.2",
     "victory-native": "^40.1.0"
   },
