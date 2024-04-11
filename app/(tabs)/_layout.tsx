@@ -24,7 +24,7 @@ export default function TabLayout() {
           // to prevent a hydration error in React Navigation v6.
           headerShown: useClientOnlyValue(false, true),
           tabBarStyle: {
-            height: 80,
+            height: 90,
             borderColor: "#5d8bb0",
             borderTopColor: "#5d8bb0",
             backgroundColor: "#5d8bb0",
@@ -34,7 +34,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Landing Page",
+            title: "Home",
             tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
             headerRight: () => (
               <Link href="/details" asChild>
@@ -62,8 +62,14 @@ export default function TabLayout() {
         <Tabs.Screen
           name="graphs"
           options={{
-            title: "Graphs",
-            tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
+            title: "Data",
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="bar-chart" color={color} />
+            ),
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#8cb0ce",
+            },
           }}
         />
         <Tabs.Screen
@@ -71,6 +77,10 @@ export default function TabLayout() {
           options={{
             title: "Storybook",
             tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#8cb0ce",
+            },
           }}
         />
       </Tabs>
