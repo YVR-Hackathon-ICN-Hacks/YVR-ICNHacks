@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, ScrollView, ActivityIndicator, Button } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useQuery } from "react-query";
@@ -14,10 +14,12 @@ import { getDataByAreaCodeAndDate } from "@/api/data/dataApi";
 import { getAreaCode } from "@/api/areaCode/areaCodeApi";
 import { Dropdown } from 'react-native-element-dropdown';
 
+
 type TransformedDataType = {
   label: string;
   value: string;
 };
+
 
 export default function LineChartTab() {
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -27,7 +29,8 @@ export default function LineChartTab() {
   const [temperatureData, setTemperatureData] = useState<ChartDataset[]>([]);
   const [CO2Data, setCO2Data] = useState<ChartDataset[]>([]);
   const [airflowData, setAirflowData] = useState<ChartDataset[]>([]);
-
+  const [dateData, setDateData] = useState<TransformedDataType[]>([]);
+  const [isDateSelectAvailable, setIsDateSelectAvailable] = useState(true);
   const { data: areaCodesData, isLoading: isAreaCodesLoading } = useQuery(
     "areaCodes",
     getAreaCode,
@@ -42,25 +45,51 @@ export default function LineChartTab() {
     }
   );
 
+
   const areaCodes = areaCodesData?.data.areaCodes || [];
+
 
   //filter data
   const areaData: TransformedDataType[] = [];
-  const dateData: TransformedDataType[] = [];
+  //const dateData: TransformedDataType[] = [];
   areaCodes.forEach(item => {
     areaData.push({
       label: item.areaCode,
       value: item.areaCode
     })
   });
-  if (areaCodes.length > 0 && areaCodes[0].dates) {
-    areaCodes[0].dates.forEach(item => {
-      dateData.push({
-        label: item,
-        value: item
-      })
-    });
-  }
+  // if (areaCodes.length > 0 && areaCodes[0].dates) {
+  //   areaCodes[0].dates.forEach(item => {
+  //     dateData.push({
+  //       label: item,
+  //       value: item
+  //     })
+  //   });
+  // }
+
+
+  useEffect(() => {
+    // Fetch dateData when selectedLocation changes
+    if (selectedLocation && areaCodesData?.data.areaCodes.length > 0) {
+      const selectedArea = areaCodesData.data.areaCodes.find(
+        (area) => area.areaCode === selectedLocation
+      );
+      if (selectedArea) {
+        updateDateData(selectedArea.dates);
+      }
+    }
+  }, [selectedLocation, areaCodesData]);
+
+
+  const updateDateData = (dates: string[]) => {
+    const transformedDates: TransformedDataType[] = dates.map((date) => ({
+      label: date,
+      value: date,
+    }));
+    setDateData(transformedDates);
+    setIsDateSelectAvailable(false);
+  };
+
 
   const { data: chartData, isLoading: isChartDataLoading } = useQuery(
     ["chartData", selectedLocation, selectedDate],
@@ -71,7 +100,12 @@ export default function LineChartTab() {
   );
 
 
-  const fetchData = () => {
+  function delayedFunction() {
+    console.log("Delayed function executed!");
+  }
+
+
+  const fetchDataByAreaCodeAndDate = () => {
     if (selectedLocation && selectedDate) {
       setIsLoading(true);
       try {
@@ -79,6 +113,7 @@ export default function LineChartTab() {
         let temperatureDataset: ChartDataset[] = [];
         let CO2Dataset: ChartDataset[] = [];
         let airflowDataset: ChartDataset[] = [];
+
 
         if (chartData?.success) {
           const fetchedData = chartData.data.data;
@@ -121,9 +156,14 @@ export default function LineChartTab() {
       } finally {
         setIsLoading(false);
       }
-
     }
+  }
+  const fetchData = () => {
+    fetchDataByAreaCodeAndDate();
   };
+
+
+
 
   if (isLoading) {
     return (
@@ -139,14 +179,6 @@ export default function LineChartTab() {
     );
   }
 
-  // if (temperatureDataset.length === 0) {
-  //   return (
-  //     <View style={{ alignItems: "center", justifyContent: "center" }}>
-  //       <Text>No data found for this location and date</Text>
-  //     </View>
-  //   );
-  // }
-
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -160,6 +192,7 @@ export default function LineChartTab() {
           labelField={"label"}
           valueField={"value"}
           style={styles.dropdownMenu}
+          selectedTextStyle={styles.selectedTextStyle}
         />
         <Dropdown
           data={dateData}
@@ -169,7 +202,8 @@ export default function LineChartTab() {
           }}
           labelField={"label"}
           valueField={"value"}
-          style={styles.dropdownMenu}
+          style={[styles.dropdownMenu]}
+          disable={isDateSelectAvailable}
         />
       </View>
       <Button title="Fetch Data" onPress={fetchData} />
@@ -204,19 +238,19 @@ export default function LineChartTab() {
                         .padStart(2, "0")}`;
                     }}
                     chartConfig={{
-                      backgroundColor: "#fafafa",
-                      backgroundGradientFrom: "#ffffff",
-                      backgroundGradientTo: "#ffffff",
-                      decimalPlaces: 2,
-                      color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
+                      backgroundColor: "#d3d3d3",
+                      backgroundGradientFrom: "#f0f8ff",
+                      backgroundGradientTo: "#f0f8ff",
+                      decimalPlaces: 1,
+                      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black color for contrast
                       labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                       style: {
-                        borderRadius: 30,
+                        borderRadius: 16,
                       },
                       propsForDots: {
-                        r: "2",
-                        strokeWidth: "4",
-                        stroke: "#0288d1",
+                        r: "4",
+                        strokeWidth: "2",
+                        stroke: "#000",
                       },
                     }}
                     bezier
@@ -257,19 +291,19 @@ export default function LineChartTab() {
                         .padStart(2, "0")}`;
                     }}
                     chartConfig={{
-                      backgroundColor: "#fafafa",
-                      backgroundGradientFrom: "#ffffff",
-                      backgroundGradientTo: "#ffffff",
-                      decimalPlaces: 2,
-                      color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
+                      backgroundColor: "#d3d3d3",
+                      backgroundGradientFrom: "#f0f8ff",
+                      backgroundGradientTo: "#f0f8ff",
+                      decimalPlaces: 1,
+                      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black color for contrast
                       labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                       style: {
-                        borderRadius: 30,
+                        borderRadius: 16,
                       },
                       propsForDots: {
-                        r: "2",
-                        strokeWidth: "4",
-                        stroke: "#0288d1",
+                        r: "4",
+                        strokeWidth: "2",
+                        stroke: "#000",
                       },
                     }}
                     bezier
@@ -310,19 +344,19 @@ export default function LineChartTab() {
                         .padStart(2, "0")}`;
                     }}
                     chartConfig={{
-                      backgroundColor: "#fafafa",
-                      backgroundGradientFrom: "#ffffff",
-                      backgroundGradientTo: "#ffffff",
-                      decimalPlaces: 2,
-                      color: (opacity = 1) => `rgba(0, 121, 0, ${opacity})`, // Deep sky blue for contrast
+                      backgroundColor: "#d3d3d3",
+                      backgroundGradientFrom: "#f0f8ff",
+                      backgroundGradientTo: "#f0f8ff",
+                      decimalPlaces: 1,
+                      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black color for contrast
                       labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                       style: {
-                        borderRadius: 30,
+                        borderRadius: 16,
                       },
                       propsForDots: {
-                        r: "2",
-                        strokeWidth: "4",
-                        stroke: "#0288d1",
+                        r: "4",
+                        strokeWidth: "2",
+                        stroke: "#000",
                       },
                     }}
                     bezier
@@ -342,6 +376,7 @@ export default function LineChartTab() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -352,11 +387,12 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     marginBottom: 10,
+    marginLeft: 10
   },
   dropdownStyles: {
     flex: 1,
     flexDirection: "row",
-    width: "90%",
+    width: "100%",
     backgroundColor: "#FFF",
     marginTop: 40,
     marginBottom: 40,
@@ -364,12 +400,18 @@ const styles = StyleSheet.create({
   dropdownMenu: {
     marginLeft: 10,
     marginRight: 20,
-    width: 150
+    width: 170,
   },
   box: {
     height: 50
   },
   chartContainer: {
-    marginTop: 20
+    marginTop: 20,
+  },
+  selectedTextStyle: {
+    fontSize: 12
   }
 });
+
+
+

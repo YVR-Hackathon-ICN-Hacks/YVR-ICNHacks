@@ -80,21 +80,21 @@ function RootLayoutNav({ userAuth }: { userAuth: string | null }) {
   return (
     <ThemeProvider value={DefaultTheme}>
       <StatusBar style="dark" />
-      {userAuth === null ? (
+      {/* {userAuth === null ? (
         <Login />
-      ) : (
-        <Stack screenOptions={{ headerShown: true }}>
-          <Stack.Screen
-            name="(auth)"
-            options={{
-              title: "Home",
-              headerStyle: {
-                backgroundColor: "#c6d8e7",
-              },
-            }}
-          />
-        </Stack>
-      )}
+      ) : ( */}
+      <Stack screenOptions={{ headerShown: true }}>
+        <Stack.Screen
+          name="(auth)"
+          options={{
+            title: "Home",
+            headerStyle: {
+              backgroundColor: "#c6d8e7",
+            },
+          }}
+        />
+      </Stack>
+      {/* )} */}
     </ThemeProvider>
   );
 }
