@@ -1,4 +1,4 @@
-import { ActivityIndicator, Button, Modal, ScrollView, StyleSheet, TouchableHighlight, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Button, Modal, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SwipeRow } from "react-native-swipe-list-view";
@@ -8,6 +8,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
 import { useQuery } from "react-query";
 import { Dropdown } from 'react-native-element-dropdown';
+import { TextSize } from "victory";
 
 type RowMap = { [key: string]: SwipeRow<any> };
 
@@ -27,17 +28,17 @@ export default function Landing() {
 
   const getPriorityColor = (priority: Number) => {
     if (priority === 0) {
-      return "#228B22";
+      return "orange";
     } else if (priority === 1) {
-      return "#E3B23C";
-    } else {
       return "#D22B2B";
+    } else {  
+      return "#1B1212";
     };
   }
 
   const sortOptions = [
     { label: "Priority", value: "0" },
-    { label: "Datetime (Old)", value: "1" },
+    { label: "Datetime (Old)", value: "1"},
     { label: "Datetime (New)", value: "2" }
   ]
 
@@ -47,8 +48,10 @@ export default function Landing() {
     { label: "Bad", value: "2" },
     { label: "Very bad", value: "3" }
   ]
+
   const [isLoading, setIsLoading] = useState(false);
   const [unsolvedIssuedataList, setunsolvedIssueDataList] = useState([]);
+  const [solvedIssueDataList, setSolvedIssueDataList] = useState<any[]>([]);
   const [entireabnormalData, setEntireAbnormalData] = useState([]);
 
   const { data: data, isLoading: isAbnormalDataLoading } = useQuery('abnormalData', getAbnormalData, {
@@ -63,6 +66,7 @@ export default function Landing() {
         }));
 
         setunsolvedIssueDataList(formattedAbnormalDataList.filter((item: { solved: any; }) => !item.solved));
+        setSolvedIssueDataList(formattedAbnormalDataList.filter((item: { solved: any; }) => item.solved));
         setEntireAbnormalData(formattedAbnormalDataList);
         setIsLoading(false);
       }
@@ -94,13 +98,14 @@ export default function Landing() {
   }
 
   const deleteSpecificItem = (rowMap: RowMap, itemToDelete: any) => {
+    const solvedIssue = unsolvedIssuedataList.find((item: any) => item.id === itemToDelete);
     const updatedDataList = unsolvedIssuedataList.filter((item: any) => item.id !== itemToDelete);
     setunsolvedIssueDataList(updatedDataList);
     updateAbnormalData(itemToDelete);
+    setSolvedIssueDataList([...solvedIssueDataList, solvedIssue]);
   };
 
   const handleViewSolved = () => {
-    const solvedIssueDataList = entireabnormalData.filter((item: any) => item.solved);
     setShowModal(true);
   };
 
@@ -113,20 +118,63 @@ export default function Landing() {
       <View style={[styles.container, { backgroundColor: "white" }]}>
         <View style={styles.textContainer}>
           <Text style={{ fontSize: 20, paddingTop: 20 }}>Solved Abnormal Data</Text>
+          <View style={styles.separator} />
         </View>
         <View style={styles.statusContainer}>
           <View style={[styles.itemStyle, { backgroundColor: "white", marginTop: 20 }]}>
-            {entireabnormalData.filter((item: any) => item.solved).map((item: any) => (
+            {solvedIssueDataList.map((item: any) => (
               <View key={item.id} style={[styles.itemContainer, { backgroundColor: "#b6d6e8" }, styles.shadow]}>
                 <View style={[styles.itemContainerLeft, { backgroundColor: "#b6d6e8" }]}>
                   <Text style={styles.item}>{item.area_id}</Text>
                   <Text style={styles.item}>{item.timestamp}</Text>
                   <FontAwesome name="circle" size={25} color={getPriorityColor(item.priority)} />
                 </View>
-                <View style={[styles.itemContainerRight, { backgroundColor: "#b6d6e8" }]}>
-                  <Text style={styles.item}>Temperature: {item.temperature}</Text>
-                  <Text style={styles.item}>Air Flow: {item.air_flow}</Text>
-                  <Text style={styles.item}>CO2: {item.co2}</Text>
+                <View style={[styles.itemContainerRight, {backgroundColor: "#b6d6e8"}]}>
+                  <Text style={styles.item}>
+                    Temperature {item.temperature === "avg" ? ( // 0 should be changed to 'avg'
+                      <FontAwesome name="minus" size={20} color="green" />
+                    ) : item.temperature === "high" ? ( // 1 should be changed to high
+                      <FontAwesome name="caret-up" size={20} color="orange" />
+                    ) : item.temperature === "too_high" ? (
+                      <FontAwesome name="caret-up" size={20} color="#D22B2B" />
+                    ) : item.temperature === "low" ? (  // 2 should be changed to low
+                      <FontAwesome name="caret-down" size={20} color="orange" />
+                    ) : item.temperature === "too_low" ? (
+                      <FontAwesome name="caret-down" size={20} color="#D22B2B" />
+                    ) : (
+                      <FontAwesome name="times" size={20} color="red" />
+                    )}
+                  </Text>
+                  <Text style={styles.item}>
+                    Air Flow {item.air_flow === "avg" ? ( // 0 should be changed to 'avg'
+                      <FontAwesome name="minus" size={20} color="green" />
+                    ) : item.air_flow === "high" ? ( // 1 should be changed to high
+                      <FontAwesome name="caret-up" size={20} color="orange" />
+                    ) : item.air_flow === "too_high" ? (
+                      <FontAwesome name="caret-up" size={20} color="#D22B2B" />
+                    ) : item.air_flow === "low" ? (  // 2 should be changed to low
+                      <FontAwesome name="caret-down" size={20} color="orange" />
+                    ) : item.air_flow === "too_low" ? (
+                      <FontAwesome name="caret-down" size={20} color="#D22B2B" />
+                    ) : (
+                      <FontAwesome name="times" size={20} color="red" />
+                    )}
+                  </Text>
+                  <Text style={styles.item}>
+                    CO2 {item.co2 === "avg" ? ( // 0 should be changed to 'avg'
+                      <FontAwesome name="minus" size={20} color="green" />
+                    ) : item.co2 === "high" ? ( // 1 should be changed to high
+                      <FontAwesome name="caret-up" size={20} color="orange" />
+                    ) : item.co2 === "too_high" ? (
+                      <FontAwesome name="caret-up" size={20} color="#D22B2B" />
+                    ) : item.co2 === "low" ? (  // 2 should be changed to low
+                      <FontAwesome name="caret-down" size={20} color="orange" />
+                    ) : item.co2 === "too_low" ? (
+                      <FontAwesome name="caret-down" size={20} color="#D22B2B" />
+                    ) : (
+                      <FontAwesome name="times" size={20} color="red" />
+                    )}
+                  </Text>
                 </View>
               </View>
             ))
@@ -175,8 +223,19 @@ export default function Landing() {
               setIsSortFocus(false);
               onSortOptionSelect(item.value);
             }}
+            renderItem={( item ) => (
+              <View style={styles.dropdownItemContainer}>
+                <Text style={styles.dropdownItem}>
+                  {item.label}
+                </Text>
+              </View>
+            )}
           />
-          <Button title="View Solved" onPress={handleViewSolved} />
+          <TouchableOpacity
+            style={styles.viewSolvedButton}
+            onPress={handleViewSolved} >
+            <Text style={{color: "#fff", fontWeight: "bold"}}>View Solved</Text>
+          </TouchableOpacity>
           <Dropdown
             style={[styles.dropdown, isFilterFocus && { borderColor: 'blue' }]}
             placeholderStyle={styles.placeholderStyle}
@@ -194,12 +253,23 @@ export default function Landing() {
               setIsFilterFocus(false);
               onFilterOptionSelect(item.value);
             }}
+            renderItem={( item ) => (
+              <View style={styles.dropdownItemContainer}>
+                <Text style={styles.dropdownItem}>
+                  {item.label}
+                </Text>
+              </View>
+            )}
           />
         </View>
         <View style={styles.itemStyle}>
           <Modal visible={showModal} onRequestClose={handleCloseModal}>
             {modalContent}
-            <Button title="Close" onPress={handleCloseModal} />
+            <TouchableOpacity
+              style={{backgroundColor: "#de392a", height: 40, justifyContent: 'center', alignItems: 'center'}}
+              onPress={handleCloseModal} >
+              <Text style={{color: "#fff", fontWeight: "bold"}}>CLOSE</Text>
+            </TouchableOpacity>
           </Modal>
           <SwipeListView
             ref={listViewRef}
@@ -212,9 +282,51 @@ export default function Landing() {
                   <FontAwesome name="circle" size={25} color={getPriorityColor(item.priority)} />
                 </View>
                 <View style={styles.itemContainerRight}>
-                  <Text style={styles.item}>Temperature: {item.temperature}</Text>
-                  <Text style={styles.item}>Air Flow: {item.air_flow}</Text>
-                  <Text style={styles.item}>CO2: {item.co2}</Text>
+                  <Text style={styles.item}>
+                    Temperature {item.temperature === "avg" ? ( // 0 should be changed to 'avg'
+                      <FontAwesome name="minus" size={20} color="green" />
+                    ) : item.temperature === "high" ? ( // 1 should be changed to high
+                      <FontAwesome name="caret-up" size={20} color="orange" />
+                    ) : item.temperature === "too_high" ? (
+                      <FontAwesome name="caret-up" size={20} color="#D22B2B" />
+                    ) : item.temperature === "low" ? (  // 2 should be changed to low
+                      <FontAwesome name="caret-down" size={20} color="orange" />
+                    ) : item.temperature === "too_low" ? (
+                      <FontAwesome name="caret-down" size={20} color="#D22B2B" />
+                    ) : (
+                      <FontAwesome name="times" size={20} color="red" />
+                    )}
+                  </Text>
+                  <Text style={styles.item}>
+                    Air Flow {item.air_flow === "avg" ? ( // 0 should be changed to 'avg'
+                      <FontAwesome name="minus" size={20} color="green" />
+                    ) : item.air_flow === "high" ? ( // 1 should be changed to high
+                      <FontAwesome name="caret-up" size={20} color="orange" />
+                    ) : item.air_flow === "too_high" ? (
+                      <FontAwesome name="caret-up" size={20} color="#D22B2B" />
+                    ) : item.air_flow === "low" ? (  // 2 should be changed to low
+                      <FontAwesome name="caret-down" size={20} color="orange" />
+                    ) : item.air_flow === "too_low" ? (
+                      <FontAwesome name="caret-down" size={20} color="#D22B2B" />
+                    ) : (
+                      <FontAwesome name="times" size={20} color="red" />
+                    )}
+                  </Text>
+                  <Text style={styles.item}>
+                    CO2 {item.co2 === "avg" ? ( // 0 should be changed to 'avg'
+                      <FontAwesome name="minus" size={20} color="green" />
+                    ) : item.co2 === "high" ? ( // 1 should be changed to high
+                      <FontAwesome name="caret-up" size={20} color="orange" />
+                    ) : item.co2 === "too_high" ? (
+                      <FontAwesome name="caret-up" size={20} color="#D22B2B" />
+                    ) : item.co2 === "low" ? (  // 2 should be changed to low
+                      <FontAwesome name="caret-down" size={20} color="orange" />
+                    ) : item.co2 === "too_low" ? (
+                      <FontAwesome name="caret-down" size={20} color="#D22B2B" />
+                    ) : (
+                      <FontAwesome name="times" size={20} color="red" />
+                    )}
+                  </Text>
                 </View>
               </View>
             )}
@@ -227,7 +339,7 @@ export default function Landing() {
                   }
                   }
                 >
-                  <FontAwesome name="trash" size={25} color="white" />
+                  <FontAwesome name="check" size={25} color="white" />
                 </TouchableOpacity>
               </View>
             )}
@@ -296,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#8cb0ce",
   },
   deleteButton: {
-    backgroundColor: "red",
+    backgroundColor: "#009E60",
     justifyContent: "center",
     alignItems: "center",
     width: 70,
@@ -359,7 +471,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: 12,
   },
   modalitem: {
     fontSize: 16,
@@ -371,5 +483,28 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-  }
+  },
+  dropdownItemContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  dropdownItem: {
+    fontSize: 11,
+  },
+  viewSolvedButton: {
+    backgroundColor: '#009E60',
+    width: 100,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 7,
+  },
+  separator: {
+    marginTop: 30,
+    borderColor: "black",
+    borderWidth: 1,
+    width: "90%",
+    color: "black",
+  },
 });
