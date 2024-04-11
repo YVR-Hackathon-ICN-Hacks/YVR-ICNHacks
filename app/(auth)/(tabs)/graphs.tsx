@@ -3,8 +3,8 @@ import { StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { LineChart } from "react-native-chart-kit";
 import { Text, View } from "@/components/Themed";
-import data from "../../constants/data.json";
-import allData from "../../constants/allData.json";
+import data from "@/constants/data.json";
+import allData from "@/constants/allData.json";
 import { Reading } from "@/types/types";
 import { Dropdown } from 'react-native-element-dropdown';
 
