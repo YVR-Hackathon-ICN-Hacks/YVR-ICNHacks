@@ -3,7 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -40,7 +40,7 @@
     "lodash": "^4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "^0.73.5",
+    "react-native": "0.73.6",
     "react-native-chart-kit": "^6.12.0",
     "react-native-charts-wrapper": "^0.6.0",
     "react-native-dotenv": "^3.4.11",
@@ -60,7 +60,8 @@
     "react-native-web": "~0.19.6",
     "react-query": "^3.39.3",
     "victory": "^37.0.2",
-    "victory-native": "^40.1.0"
+    "victory-native": "^40.1.0",
+    "expo-screen-orientation": "~6.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
