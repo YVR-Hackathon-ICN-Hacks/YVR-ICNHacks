@@ -159,7 +159,14 @@ export default function Landing() {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={[styles.container, { backgroundColor: "white" }]}>
         <View style={styles.textContainer}>
-          <Text style={{ fontSize: 22, paddingTop: 50, fontWeight: "600" }}>
+          <Text
+            style={{
+              fontSize: 22,
+              paddingTop: 50,
+              fontWeight: "600",
+              color: "black",
+            }}
+          >
             Solved Abnormal Data
           </Text>
           <View style={styles.separator} />
@@ -565,6 +572,7 @@ const styles = StyleSheet.create({
   item: {
     fontSize: 15,
     height: 20,
+    color: "black",
   },
   dropdownBox: {
     flexDirection: "row",
@@ -611,6 +619,7 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     fontSize: 11,
+    color: "black",
   },
   viewSolvedButton: {
     backgroundColor: "#009E60",

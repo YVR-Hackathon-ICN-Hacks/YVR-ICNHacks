@@ -457,6 +457,7 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     fontSize: 12,
+    color: "black",
   },
   graphButton: {
     backgroundColor: "#009E60",

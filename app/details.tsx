@@ -45,48 +45,62 @@ export default function Details() {
         Challenge 3: Efficient and Healthy Building
       </Text>
       <View style={styles.separator} />
-      <Text style={{ color: "black", fontSize: 18, marginBottom: 20, fontWeight: 'bold' }}>
+      <Text
+        style={{
+          color: "black",
+          fontSize: 18,
+          marginBottom: 20,
+          fontWeight: "bold",
+        }}
+      >
         Product MVP
       </Text>
       <View style={styles.mvpContainer}>
-        <Text style={{ color: "black", fontSize: 16, marginBottom: 20, marginLeft: 20, marginRight: 20 }}>
-          <Text style={{ fontWeight: 'bold' }}>MVP 1</Text> : Retrieve data from a CSV file and visualize it with graphs.
+        <Text
+          style={{
+            color: "black",
+            fontSize: 16,
+            marginBottom: 20,
+            marginLeft: 20,
+            marginRight: 20,
+          }}
+        >
+          <Text style={{ fontWeight: "bold", color: "black" }}>MVP 1</Text> :
+          Retrieve data from a CSV file and visualize it with graphs.
         </Text>
-        <Text style={{ color: "black", fontSize: 16, marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
-          <Text style={{ fontWeight: 'bold' }}>MVP 2</Text>: Implement push notifications for abnormal data to facilitate rapid detection and response.
+        <Text
+          style={{
+            color: "black",
+            fontSize: 16,
+            marginBottom: 10,
+            marginLeft: 20,
+            marginRight: 20,
+          }}
+        >
+          <Text style={{ fontWeight: "bold", color: "black" }}>MVP 2</Text>:
+          Implement push notifications for abnormal data to facilitate rapid
+          detection and response.
         </Text>
       </View>
       <View style={styles.separator} />
-      <Text style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>
+      <Text style={{ color: "black", fontSize: 18, fontWeight: "bold" }}>
         Team Members
       </Text>
       <View style={styles.memberContainer}>
         <View style={styles.memberColumn}>
-          <Text style={styles.memberText}>
-            Jasper Oh - Full Stack
-          </Text>
-          <Text style={styles.memberText}>
-            David Cho - Frontend
-          </Text>
-          <Text style={styles.memberText}>
-            Alex Chung - Frontend
-          </Text>
+          <Text style={styles.memberText}>Jasper Oh - Full Stack</Text>
+          <Text style={styles.memberText}>David Cho - Frontend</Text>
+          <Text style={styles.memberText}>Alex Chung - Frontend</Text>
         </View>
         <View style={styles.columnSeparator}></View>
         <View style={styles.memberColumn}>
-          <Text style={styles.memberText}>
-            Jeen Namkung - Backend
-          </Text>
-          <Text style={styles.memberText}>
-            Eunjeong Hur - Frontend
-          </Text>
-          <Text style={styles.memberText}>
-            Tim Lee - Frontend
-          </Text>
+          <Text style={styles.memberText}>Jeen Namkung - Backend</Text>
+          <Text style={styles.memberText}>Eunjeong Hur - Frontend</Text>
+          <Text style={styles.memberText}>Tim Lee - Frontend</Text>
         </View>
       </View>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-    </View >
+    </View>
   );
 }
 
@@ -132,8 +146,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 8,
     textAlign: "left",
+    color: "black",
   },
   mvpContainer: {
     backgroundColor: "rgba(255, 255, 255, 0)",
-  }
+  },
 });
