@@ -1,27 +1,24 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { View, Text } from "react-native";
-import Login from "./login";
+import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from "expo-router";
+export { ErrorBoundary } from "expo-router";
+
+export const unstable_settings = {
+  initialRouteName: "(tabs)",
+};
 
 SplashScreen.preventAutoHideAsync();
 
 SystemUI.setBackgroundColorAsync("transparent");
 
 export default function RootLayout() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [userAuth, setUserAuth] = useState<string | null>(null);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -37,64 +34,55 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const checkAuthentication = async () => {
-    try {
-      const user = await AsyncStorage.getItem("@user");
-      setUserAuth(user);
-    } catch (error) {
-      console.error("Error checking authentication:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    checkAuthentication();
-  }, []);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
   if (!loaded) {
     return null;
   }
 
-  if (isLoading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  return <RootLayoutNav userAuth={userAuth} />;
+  return <RootLayoutNav />;
 }
 
-function RootLayoutNav({ userAuth }: { userAuth: string | null }) {
-  // console.log(userAuth)
+function RootLayoutNav() {
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <StatusBar style="dark" />
-      {userAuth === null ? (
-        <Login />
-      ) : (
-        <Stack screenOptions={{ headerShown: true }}>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider value={DefaultTheme}>
+        <StatusBar style="light" />
+        <Stack>
           <Stack.Screen
-            name="(auth)"
+            name="(tabs)"
             options={{
-              title: "Home",
+              headerShown: false,
+              title: "Back",
+            }}
+          />
+          <Stack.Screen
+            name="modal"
+            options={{
+              presentation: "modal",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="details"
+            options={{
+              presentation: "modal",
+              headerStyle: {
+                backgroundColor: "#c6d8e7",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="pages"
+            options={{
+              presentation: "card",
               headerStyle: {
                 backgroundColor: "#c6d8e7",
               },
             }}
           />
         </Stack>
-      )}
-    </ThemeProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
