@@ -8,9 +8,10 @@ export async function addPushToken(route: string, body: any): Promise<any> {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: body,
     });
     const data = await response.json();
+    console.log(data);
 
     if (response.ok) {
       if (data.success) {
