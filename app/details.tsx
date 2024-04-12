@@ -10,7 +10,7 @@ export default function Details() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "YVR Hackathon 2024",
+      headerTitle: "YVR Air Guard",
     });
   }, [navigation]);
 
@@ -20,6 +20,9 @@ export default function Details() {
 
   return (
     <View style={styles.container}>
+      <Text style={{ color: "black", fontSize: 18, marginBottom: 10 }}>
+        YVR Hackathon 2024
+      </Text>
       <View
         style={{
           alignItems: "center",
@@ -38,13 +41,52 @@ export default function Details() {
         </Text>
       </View>
       <View style={styles.separator} />
-      <Text style={{ color: "black", fontSize: 16 }}>
+      <Text style={{ color: "black", fontSize: 18 }}>
         Challenge 3: Efficient and Healthy Building
       </Text>
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
+      <View style={styles.separator} />
+      <Text style={{ color: "black", fontSize: 18, marginBottom: 20, fontWeight: 'bold' }}>
+        Product MVP
+      </Text>
+      <View style={styles.mvpContainer}>
+        <Text style={{ color: "black", fontSize: 16, marginBottom: 20, marginLeft: 20, marginRight: 20 }}>
+          <Text style={{ fontWeight: 'bold' }}>MVP 1</Text> : Retrieve data from a CSV file and visualize it with graphs.
+        </Text>
+        <Text style={{ color: "black", fontSize: 16, marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
+          <Text style={{ fontWeight: 'bold' }}>MVP 2</Text>: Implement push notifications for abnormal data to facilitate rapid detection and response.
+        </Text>
+      </View>
+      <View style={styles.separator} />
+      <Text style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>
+        Team Members
+      </Text>
+      <View style={styles.memberContainer}>
+        <View style={styles.memberColumn}>
+          <Text style={styles.memberText}>
+            Jasper Oh - Full Stack
+          </Text>
+          <Text style={styles.memberText}>
+            David Cho - Frontend
+          </Text>
+          <Text style={styles.memberText}>
+            Alex Chung - Frontend
+          </Text>
+        </View>
+        <View style={styles.columnSeparator}></View>
+        <View style={styles.memberColumn}>
+          <Text style={styles.memberText}>
+            Jeen Namkung - Backend
+          </Text>
+          <Text style={styles.memberText}>
+            Eunjeong Hur - Frontend
+          </Text>
+          <Text style={styles.memberText}>
+            Tim Lee - Frontend
+          </Text>
+        </View>
+      </View>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-    </View>
+    </View >
   );
 }
 
@@ -68,4 +110,30 @@ const styles = StyleSheet.create({
     width: "90%",
     color: "black",
   },
+  memberContainer: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#c6d8e7",
+    padding: 20,
+  },
+  columnSeparator: {
+    flexDirection: "column",
+    width: 30,
+    backgroundColor: "rgba(255, 255, 255, 0)",
+  },
+  memberColumn: {
+    height: 100,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginBottom: 10, // 버튼 간의 간격 조절
+    backgroundColor: "rgba(255, 255, 255, 0)",
+  },
+  memberText: {
+    fontSize: 14,
+    marginBottom: 8,
+    textAlign: "left",
+  },
+  mvpContainer: {
+    backgroundColor: "rgba(255, 255, 255, 0)",
+  }
 });
