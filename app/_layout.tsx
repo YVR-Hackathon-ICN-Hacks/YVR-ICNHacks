@@ -7,6 +7,8 @@ import * as SystemUI from "expo-system-ui";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { usePushNotifications } from "@/constants/usePushNotifications";
+import { addPushToken } from "@/api/pushToken/pushTokenApi";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -24,6 +26,8 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  const { expoPushToken, notification } = usePushNotifications();
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -31,6 +35,13 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      
+      // Implement the logic that save the token to server
+      const data = JSON.stringify({
+        pushToken : expoPushToken?.data
+      });
+
+      addPushToken("pushToken", data)
     }
   }, [loaded]);
 
