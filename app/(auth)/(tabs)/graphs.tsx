@@ -162,9 +162,6 @@ export default function LineChartTab() {
     fetchDataByAreaCodeAndDate();
   };
 
-
-
-
   if (isLoading) {
     return (
       <View
@@ -179,7 +176,6 @@ export default function LineChartTab() {
     );
   }
 
-
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
       <View style={styles.dropdownStyles}>
@@ -193,6 +189,7 @@ export default function LineChartTab() {
           valueField={"value"}
           style={styles.dropdownMenu}
           selectedTextStyle={styles.selectedTextStyle}
+
         />
         <Dropdown
           data={dateData}
@@ -410,7 +407,15 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 12
-  }
+  },
+  dropdownItemContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  dropdownItem: {
+    fontSize: 11,
+  },
 });
 
 

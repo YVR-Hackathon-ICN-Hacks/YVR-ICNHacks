@@ -15,7 +15,7 @@ export default function Login() {
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
+    iosClientId: "728981157304-snp2tqnqoqnhqknf2f3k0eqc7mdbm444.apps.googleusercontent.com",
     webClientId: WEB_CLIENT_ID,
   });
 
