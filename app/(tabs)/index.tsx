@@ -61,7 +61,7 @@ export default function Landing() {
   const [solvedIssueDataList, setSolvedIssueDataList] = useState<any[]>([]);
   const [entireabnormalData, setEntireAbnormalData] = useState([]);
 
-  const { data: data, isLoading: isAbnormalDataLoading } = useQuery(
+  const { data, isLoading: isAbnormalDataLoading } = useQuery(
     "abnormalData",
     getAbnormalData,
     {
@@ -159,7 +159,7 @@ export default function Landing() {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={[styles.container, { backgroundColor: "white" }]}>
         <View style={styles.textContainer}>
-          <Text style={{ fontSize: 20, paddingTop: 50 }}>
+          <Text style={{ fontSize: 22, paddingTop: 50, fontWeight: "600" }}>
             Solved Abnormal Data
           </Text>
           <View style={styles.separator} />
@@ -269,10 +269,6 @@ export default function Landing() {
     </ScrollView>
   );
 
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
-
   const [filter, setFilter] = useState("0");
   const [isFilterFocus, setIsFilterFocus] = useState(false);
 
@@ -282,10 +278,27 @@ export default function Landing() {
   const [showModal, setShowModal] = useState(false);
 
   const listViewRef = useRef(null);
+
+  if (isLoading || isAbnormalDataLoading) {
+    return (
+      <View
+        style={{
+          alignItems: "center",
+          height: "100%",
+          backgroundColor: "#8cb0ce",
+        }}
+      >
+        <View style={{ paddingTop: 80, backgroundColor: "#8cb0ce" }}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Heat/Insulation</Text>
+        <Text style={styles.title}>YVR Airguard</Text>
         <Text style={styles.title}>Management Platform</Text>
       </View>
       <View style={styles.statusContainer}>
