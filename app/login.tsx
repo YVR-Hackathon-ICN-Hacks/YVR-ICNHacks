@@ -28,8 +28,6 @@ export default function Login() {
     if (!user) {
       if (response?.type === "success") {
         await getUserInfo(response.authentication?.accessToken ?? "");
-        // Change this David!
-        navigation.navigate("(auth)");
       }
     } else {
       setUserInfo(JSON.parse(user));

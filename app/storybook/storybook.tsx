@@ -2,6 +2,8 @@ import { View, StyleSheet } from "react-native";
 import Clickable from "@/components/Clickable";
 import { ScrollView } from "react-native";
 
+// To see story book - move back into (tabs)
+
 export default function StoryBook() {
   return (
     <ScrollView>

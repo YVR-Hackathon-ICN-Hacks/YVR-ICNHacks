@@ -14,6 +14,6 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "env.d.ts",
-    "app/(auth)/storybook/(list)/**/*"
+    "app/storybook/(list)/**/*"
   ]
 }
