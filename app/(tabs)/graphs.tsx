@@ -180,36 +180,47 @@ export default function LineChartTab() {
     >
       <View style={styles.dropdownStyles}>
         <Dropdown
+          style={[styles.dropdown]}
           data={areaData}
           value={selectedLocation}
           onChange={(item) => {
             setSelectedLocation(item.value);
           }}
-          placeholder="Select Location"
+          placeholder="Location"
           labelField={"label"}
           valueField={"value"}
-          style={styles.dropdownMenu}
           selectedTextStyle={styles.selectedTextStyle}
+          placeholderStyle={styles.placeholderStyle}
+          renderItem={(item) => (
+            <View style={styles.dropdownItemContainer}>
+              <Text style={styles.dropdownItem}>{item.label}</Text>
+            </View>
+          )}
         />
-        <Dropdown
-          data={dateData}
-          value={selectedDate}
-          onChange={(item) => {
-            setSelectedDate(item.value);
-          }}
-          placeholder="Select Date"
-          labelField={"label"}
-          valueField={"value"}
-          style={[styles.dropdownMenu]}
-          disable={isDateSelectAvailable}
-        />
-      </View>
-      <View style={{ paddingBottom: 30, backgroundColor: "#8cb0ce" }}>
         <TouchableOpacity style={styles.graphButton} onPress={fetchData}>
           <Text style={{ color: "#fff", fontWeight: "bold" }}>
             Display Graph
           </Text>
         </TouchableOpacity>
+        <Dropdown
+          style={[styles.dropdown]}
+          data={dateData}
+          value={selectedDate}
+          onChange={(item) => {
+            setSelectedDate(item.value);
+          }}
+          placeholder="Date"
+          labelField={"label"}
+          valueField={"value"}
+          disable={isDateSelectAvailable}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          renderItem={(item) => (
+            <View style={styles.dropdownItemContainer}>
+              <Text style={styles.dropdownItem}>{item.label}</Text>
+            </View>
+          )}
+        />
       </View>
       {temperatureData.length > 0 &&
         CO2Data.length > 0 &&
@@ -389,18 +400,32 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 10,
-    marginLeft: 10,
+    color: "white",
+    marginBottom: 5,
+    marginLeft: 15,
   },
   dropdownStyles: {
-    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     alignItems: "center",
     width: "90%",
+    marginTop: 25,
+    marginBottom: 0,
     backgroundColor: "#8cb0ce",
-    marginTop: 40,
-    marginBottom: 40,
+    height: 50,
+  },
+  dropdown: {
+    height: 40,
+    width: 130,
+    backgroundColor: "white",
+    marginLeft: -5,
+    marginRight: -10,
+    marginTop: 15,
+    marginBottom: 15,
+    borderColor: "gray",
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingLeft: 8,
   },
   dropdownMenu: {
     height: 40,
@@ -431,14 +456,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   dropdownItem: {
-    fontSize: 8,
+    fontSize: 12,
   },
   graphButton: {
     backgroundColor: "#009E60",
-    width: 150,
+    marginLeft: 5,
+    width: 100,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 7,
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    backgroundColor: "white",
   },
 });
